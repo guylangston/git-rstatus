@@ -1,2 +1,5 @@
 # git-status
-Recursive scan for all git repos then get status
+
+> Fast recursive scan for all git repos. Async `git fetch && git status`
+
+
