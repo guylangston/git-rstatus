@@ -1,11 +1,9 @@
 build:
-	cd ./src; @dotnet build --nologo -v q --property WarningLevel=0 /clp:ErrorsOnly
-
-build-qf:
-	cd ./src; @dotnet build --nologo -v q --property WarningLevel=0 /clp:ErrorsOnly | quickfix-dotnet
+	@cd ./src; dotnet build --nologo -v q --property WarningLevel=0 /clp:ErrorsOnly
 
 publish: build
-	cd ./src;
+	[ ! -d ./dist ] && mkdir ./dist || rm ./dist/*
+	cd ./src; dotnet publish -c Release --sc -r linux-x64 -p:PublishTrimmed=true -p:PublishSingleFile=true -o ../dist/
 
 run: build
 	cd ./src; dotnet run
