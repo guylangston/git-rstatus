@@ -15,20 +15,26 @@ public class GitFolderScanner
                 {
                     Roots.Add(new GitRoot(path, Path.GetRelativePath(root, path)));
                 }
+
                 if (depth <= maxDepth)
                 {
-                    foreach(var kid in Directory.GetDirectories(path))
+                    foreach (var kid in Directory.GetDirectories(path))
                     {
                         if (!Exclude(kid))
                         {
-                            Recurse(kid, depth+1);
+                            Recurse(kid, depth + 1);
                         }
                     }
                 }
             }
-            catch(UnauthorizedAccessException)
+            catch (UnauthorizedAccessException)
             {
                 // Skip
+            }
+            catch (Exception)
+            {
+                var stop = 1;
+                throw;
             }
         }
         Recurse(root, 0);

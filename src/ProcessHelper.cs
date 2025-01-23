@@ -42,13 +42,11 @@ public static class ProcessRunner
         proc.BeginOutputReadLine();
         proc.BeginErrorReadLine();
 
-        bool didTimeOut = false;
         if (timeout != null)
         {
             proc.WaitForExit(timeout.Value);
             if (!proc.HasExited)
             {
-                didTimeOut = true;
                 proc.Kill();
                 timer.Stop();
                 return new ProcessResult(-99, stdOut, stdErr)

@@ -43,16 +43,15 @@ public class GitStatusApp
                 {
                     ArgAllParams.Add(arg);
                 }
-                continue;
             }
-
-            if (arg.StartsWith("-"))
+            else if (arg.StartsWith("-"))
             {
                 flags.Append(arg[1..]);
-                continue;
             }
-
-            ArgPath.Add(arg);
+            else
+            {
+                ArgPath.Add(arg);
+            }
         }
         ArgAllFlags = flags.ToString();
 
@@ -228,11 +227,11 @@ public class GitStatusApp
             consoleRegion.Write(" ");
             consoleRegion.Write(txtPath);
             consoleRegion.Write(" ");
-            if (item.Status == ItemStatus.Dirty || item.Status == ItemStatus.Behind)
+            if (item.Status == ItemStatus.Dirty || item.Status == ItemStatus.Behind || item.Status == ItemStatus.Pull)
             {
                 consoleRegion.ForegroundColor = Colors[item.Status];
             }
-            consoleRegion.WriteLine(txtStatusLine, true);
+            consoleRegion.WriteLine(txtStatusLine.PadRight(40));
             consoleRegion.ForegroundColor = consoleRegion.StartFg;
             cc++;
             if (!consoleRegion.AllowOverflow && cc >= consoleRegion.Height - 2) break;
