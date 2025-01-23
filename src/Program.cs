@@ -10,7 +10,7 @@ public static class Program
         Trace.Listeners.Add(traceListener);
 #endif
 
-        var app = new GitStatusApp(args);
+        using var app = new GitStatusApp(args);
         return app.Run();
     }
 

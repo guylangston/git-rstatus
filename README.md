@@ -9,7 +9,8 @@
     - [x] 16-color support
     - [ ] 256-color support
     - [ ] fast rendering (ncurses, etc)
-    - [ ] Detect non-interactive then drop colors
+    - [ ] Detect non-interactive then drop colors and dynamic rendering
+    - [x] Render a braile-style spinner on global progress line
 - Git commands
     - [x] `git fetch`
     - [x] `git pull` only if behind and not dirty
@@ -18,8 +19,9 @@
 - [ ] Async scan phase
 - [ ] Create a detailed markdown report will all git output
     - [ ] Open report in browser?
-- [ ] `--exclude path,path,path`
-- [ ] `--help` text and man-style doc file
+- [x] `--exclude path,path,path`
+- [x] `--help` text and man-style doc file
+- [ ] Support shell command completion
 
 ## Wish List (not current plan for implementation)
 
@@ -31,7 +33,7 @@
 
 ## Project Tasks
 - Manual Publish
-    - [ ] Publish linux release on GitHub
+    - [x] Publish linux release on GitHub
     - [ ] Publish windows release on GitHub
     - [ ] Publish to arch `AUR`
     - [ ] Publish to windows `scoop` package manager
@@ -40,9 +42,11 @@
 # Command line options
 
 ```bash
-    --no-fetch *                # dont `git fetch` before `git status`
+git-status -<switched> --<params> path path path
+    --no-fetch-all              # dont `git fetch` before `git status`
     --no-fetch path,path        # same as above, but only on matching path
     -p --pull                   # pull (if status is not dirty)
-    --exclude path,path      # dont process repos containing these strings
-    -s --summary                # display a summary at the end
+    --exclude path,path         # dont process repos containing these strings
+    --depth number              # don't recurse deeper than `number`
+    -a --abs                    # show absolute paths
 ```

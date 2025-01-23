@@ -1,8 +1,7 @@
-public class DynamicConsoleRegion
+public class DynamicConsoleRegion : IDisposable
 {
     int initialLine;
     int skipped;
-    int regionStart;
     int frame;
 
     public int RequestedHeight { get; private set; }
@@ -47,7 +46,7 @@ public class DynamicConsoleRegion
         var availableLines = Console.WindowHeight - initialLine - 1;
             // -1 because we never want to use the very last line.
             // as WriteLine() on the last line will cause a automatic newline
-            // TODO: In future we could finess this away
+            // TODO: In future we could finesse this away
 
         // Q: How much size can be assigned?
         if (availableLines >= newSize)
@@ -60,8 +59,11 @@ public class DynamicConsoleRegion
             RequestedHeight = newSize;
             while(availableLines < newSize && initialLine > 0)
             {
-                Console.WriteLine(); // Add a new line
-                initialLine--;
+                if ((Console.CursorTop+availableLines) >= Console.WindowHeight-1)
+                {
+                    Console.WriteLine(); // Add a new line, scrolling the window up
+                    initialLine--;
+                }
                 availableLines++;
             }
 
@@ -74,6 +76,7 @@ public class DynamicConsoleRegion
     {
         // Clear and Reset
         Console.SetCursorPosition(0, initialLine);
+        Console.CursorVisible = false;
 
         if (frame == 0 || SafeDraw)
         {
@@ -127,5 +130,10 @@ public class DynamicConsoleRegion
         }
         skipped++;
         return false;
+    }
+
+    public void Dispose()
+    {
+        Console.CursorVisible = true;
     }
 }
