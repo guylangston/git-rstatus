@@ -1,8 +1,9 @@
 public enum ItemStatus
 {
-    Discover,
-    Checking,
-    Ignored,
+    None,
+    Found,
+    Check,
+    Ignore,
     Clean,
     Dirty,
     Behind,
@@ -45,7 +46,7 @@ public class GitRoot
 
     public string Path { get; }
     public string PathRelative { get; }
-    public ItemStatus Status { get; set; } = ItemStatus.Discover;
+    public ItemStatus Status { get; set; } = ItemStatus.Found;
     public RunStatus StatusRunning { get; set; } = RunStatus.Pending;
     public Exception? Error { get; private set; }
 
@@ -55,8 +56,8 @@ public class GitRoot
     public string StatusLine()
     {
         if (StatusRunning == RunStatus.Error) return $"<ERROR> {Error?.Message}";
-        if (Status == ItemStatus.Discover) return "";
-        if (Status == ItemStatus.Ignored)  return "";
+        if (Status == ItemStatus.Found) return "";
+        if (Status == ItemStatus.Ignore)  return "";
         if (gitStatus != null)
         {
             if (Status == ItemStatus.Behind) return gitStatus.FirstLineOrError();
@@ -65,7 +66,7 @@ public class GitRoot
                 return $"[{gitStatus.StdOut.Count-1} files] {gitStatus.StdOut[1]}";
             }
         }
-        if (Status == ItemStatus.Checking) return "";
+        if (Status == ItemStatus.Check) return "";
         if (Status == ItemStatus.Clean)
         {
             if (gitLog != null)
@@ -145,13 +146,13 @@ public class GitRoot
         try
         {
             StatusRunning = RunStatus.Running;
-            if (Status == ItemStatus.Ignored)
+            if (Status == ItemStatus.Ignore)
             {
                 StatusRunning = RunStatus.Complete;
                 return;
             }
 
-            Status = ItemStatus.Checking;
+            Status = ItemStatus.Check;
             if (app.ArgRemote) await GitRemote();
             if (app.ShouldFetch(this)) await GitFetch();
 

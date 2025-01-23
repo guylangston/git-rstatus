@@ -12,9 +12,8 @@ public class GitStatusApp : IDisposable
     bool scanComplete;
     string? globalStatus;
     GitRoot[]? gitRoots;
-    Spinner spinner = new();
+    Spinner spinner = new(0.2f);
     ILogger logger = Program.LoggerFactory.GetLogger<GitStatusApp>();
-
 
     public GitStatusApp(string[] args)
     {
@@ -75,6 +74,7 @@ public class GitStatusApp : IDisposable
     public bool ArgRemote { get; set; }
     public bool ArgPull => ArgAllFlags.Contains('p') || ArgAllParams.Contains("--pull");
     public bool ArgHelp => ArgAllFlags.Contains('?') ||  ArgAllFlags.Contains('h') || ArgAllParams.Contains("--help");
+    public bool ArgAbs => ArgAllFlags.Contains('a') || ArgAllParams.Contains("--abs");
     public int ArgMaxDepth { get; } = 8;
 
     public IReadOnlyList<GitRoot> Roots => gitRoots ?? throw new NullReferenceException("gitRoots. Scan expected first");
@@ -230,18 +230,20 @@ public class GitStatusApp : IDisposable
             -p --pull                   # pull (if status is not dirty)
             --exclude path,path         # dont process repos containing these strings
             --depth number              # don't recurse deeper than `number`
+            --log                       # create log file (in $PWD)
+            -a --abs                    # use absolute paths
         """);
     }
 
     static Dictionary<ItemStatus, ConsoleColor> Colors = new()
     {
-        {ItemStatus.Discover,   ConsoleColor.DarkBlue},
-        {ItemStatus.Checking,   ConsoleColor.DarkCyan},
-        {ItemStatus.Ignored,    ConsoleColor.DarkGray},
-        {ItemStatus.Clean,      ConsoleColor.DarkGreen},
-        {ItemStatus.Dirty,      ConsoleColor.Yellow},
-        {ItemStatus.Behind,     ConsoleColor.Cyan},
-        {ItemStatus.Pull,       ConsoleColor.Magenta},
+        {ItemStatus.Found,  ConsoleColor.DarkBlue},
+        {ItemStatus.Check,  ConsoleColor.DarkCyan},
+        {ItemStatus.Ignore, ConsoleColor.DarkGray},
+        {ItemStatus.Clean,  ConsoleColor.DarkGreen},
+        {ItemStatus.Dirty,  ConsoleColor.Yellow},
+        {ItemStatus.Behind, ConsoleColor.Cyan},
+        {ItemStatus.Pull,   ConsoleColor.Magenta},
     };
 
     /// <summary>Render to the console</summary>
@@ -253,31 +255,21 @@ public class GitStatusApp : IDisposable
 
         if (gitRoots == null || gitRoots.Length == 0) return;
 
-        var maxPath = Roots.Max(x=>x.PathRelative.Length);
-        var sizePath = Math.Min(maxPath, Math.Min(80, consoleRegion.Width / 2));
-        int cc = 0;
+        var table = new TableRenderer<Header, string>();
+        table.Headers.Add(new Header("Status", 6));
+        table.Headers.Add(new Header("Path", 30, 60));
+        table.Headers.Add(new Header("Git", 30, 60));
         foreach(var item in Roots.OrderBy(x=>x.Path))
         {
-            /* var path = "./" + item.PathRelative; */
-            var path = item.PathRelative;
-            var txtPath = StringHelper.ElipseAtStart(path, sizePath, "__").PadRight(sizePath);
+            var path = ArgAbs ? item.Path : item.PathRelative;
             var txtStatusLine =  item.StatusLine();
+            table.WriteRow(item.Status.ToString(), path, item.StatusLine());
 
-            consoleRegion.ForegroundColor = Colors[item.Status];
-            consoleRegion.Write(item.Status.ToString().PadRight(8));
-            consoleRegion.ForegroundColor = consoleRegion.StartFg;
-            consoleRegion.Write(" ");
-            consoleRegion.Write(txtPath);
-            consoleRegion.Write(" ");
-            if (item.Status == ItemStatus.Dirty || item.Status == ItemStatus.Behind || item.Status == ItemStatus.Pull)
-            {
-                consoleRegion.ForegroundColor = Colors[item.Status];
-            }
-            consoleRegion.WriteLine(txtStatusLine.PadRight(40));
-            consoleRegion.ForegroundColor = consoleRegion.StartFg;
-            cc++;
-            if (!consoleRegion.AllowOverflow && cc >= consoleRegion.Height - 2) break;
-
+            if (!consoleRegion.AllowOverflow && table.RowCount >= consoleRegion.Height - 2) break;
+        }
+        foreach(var row in table.RenderToString())
+        {
+            consoleRegion.WriteLine(row);
         }
 
         // Status Line

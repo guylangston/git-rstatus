@@ -32,12 +32,9 @@ public class GitFolderScanner
                 // Skip
             }
 #if DEBUG
-            catch (Exception)
-            {
-                throw;
-            }
-        }
+            catch (Exception) { throw; }
 #endif
+        }
         Recurse(root, 0);
 
         return Task.CompletedTask;
