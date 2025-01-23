@@ -16,6 +16,8 @@
     - [ ] `git remote` icons for github, etc
 - [ ] Export to json
 - [ ] Async scan phase
+- [ ] Create a detailed markdown report will all git output
+    - [ ] Open report in browser?
 - [ ] `--exclude path,path,path`
 - [ ] `--help` text and man-style doc file
 
