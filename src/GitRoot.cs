@@ -34,15 +34,22 @@ public class GitRoot
     ProcessResult? gitRemote;
     ProcessResult? gitLog;
     ProcessResult? gitPull;
+    ILogger logger;
 
-    public required string Path { get; init;}
-    public required string PathRelative { get; init; }
+    public GitRoot(string path, string relPath)
+    {
+        Path = path;
+        PathRelative = relPath;
+        logger = Program.LoggerFactory.GetLogger(nameof(GitRoot) + ":" + relPath);
+    }
+
+    public string Path { get; }
+    public string PathRelative { get; }
     public ItemStatus Status { get; set; } = ItemStatus.Discover;
     public RunStatus StatusRunning { get; set; } = RunStatus.Pending;
     public Exception? Error { get; private set; }
 
     public bool IsComplete => StatusRunning == RunStatus.Complete || StatusRunning == RunStatus.Error;
-    public bool IsIgnored() => Path.Contains("linux");
     public string? LogFirstLine => gitLog?.StdOut.FirstOrDefault();
 
     public string StatusLine()
@@ -79,32 +86,58 @@ public class GitRoot
             }
             return "";
         }
+        if (Status == ItemStatus.Pull)
+        {
+            if (gitPull != null)
+            {
+                return gitPull.FirstLineOrError();
+            }
+        }
         return $"{Status}";
+    }
+
+    private async Task<ProcessResult> RunYielding(string cmd, string args)
+    {
+        var res = await ProcessRunner.RunYieldingProcessResult(cmd, args, Path, 50, TimeSpan.FromSeconds(30));
+        logger.Log($"CMD: {cmd} {args} ==> ExitCode:{res.ExitCode} in {res.Duration} [std: {res.StdOut.Count}, err: {res.StdErr.Count}]");
+        if (res.TimeOutBeforeComplete)
+        {
+            logger.Log("CMD-TIMEOUT!");
+        }
+        foreach(var err in res.StdErr)
+        {
+            logger.Log($"ERR: {err}");
+        }
+        foreach(var lin in res.StdOut)
+        {
+            logger.Log(lin);
+        }
+        return res;
     }
 
     public async Task GitStatus()
     {
-        gitStatus = await ProcessHelper.RunYieldingProcessResult("git", "status -bs", Path);
+        gitStatus = await RunYielding("git", "status -bs");
     }
 
     public async Task GitFetch()
     {
-        gitFetch = await ProcessHelper.RunYieldingProcessResult("git", "fetch", Path);
+        gitFetch = await RunYielding("git", "fetch");
     }
 
     public async Task GitRemote()
     {
-        gitRemote = await ProcessHelper.RunYieldingProcessResult("git", "remote -v", Path);
+        gitRemote = await RunYielding("git", "remote -v");
     }
 
     public async Task GitLog()
     {
-        gitLog = await ProcessHelper.RunYieldingProcessResult("git", "log --pretty=\"(%cd) %s\" --date=relative", Path);
+        gitLog = await RunYielding("git", "log --pretty=\"(%cd) %s\" --date=relative -10");
     }
 
     public async Task GitPull()
     {
-        gitPull = await ProcessHelper.RunYieldingProcessResult("git", "pull", Path);
+        gitPull = await RunYielding("git", "pull");
     }
 
     public async Task Process(GitStatusApp app)
@@ -112,23 +145,23 @@ public class GitRoot
         try
         {
             StatusRunning = RunStatus.Running;
-            if (IsIgnored())
+            if (Status == ItemStatus.Ignored)
             {
-                Status = ItemStatus.Ignored;
                 StatusRunning = RunStatus.Complete;
                 return;
             }
 
             Status = ItemStatus.Checking;
-            await GitRemote();
-            await GitFetch();
+            if (app.ArgRemote) await GitRemote();
+            if (app.ShouldFetch(this)) await GitFetch();
+
             await GitStatus();
             if (gitStatus != null && gitStatus.StdOut.Count == 1)
             {
                 if (gitStatus.StdOut.First().Contains("[behind "))
                 {
                     Status = ItemStatus.Behind;
-                    if (app.HasArg("--pull") || app.HasFlag('p'))
+                    if (app.ArgPull)
                     {
                         await GitPull();
                         Status = ItemStatus.Pull;

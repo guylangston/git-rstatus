@@ -2,12 +2,22 @@ using System.Diagnostics;
 
 public record ProcessResult(int ExitCode, List<string> StdOut, List<string> StdErr)
 {
+    public TimeSpan Duration { get; init; }
+    public bool TimeOutBeforeComplete { get; set; }
 }
 
-public static class ProcessHelper
+public static class ProcessRunner
 {
-    public static async Task<ProcessResult> RunYieldingProcessResult(string prog, string args, string? directory = null, int maxLines = 100)
+    public static async Task<ProcessResult> RunYieldingProcessResult
+            (
+                string prog, string args,
+                string? directory = null, int maxLines = 100, TimeSpan? timeout = null
+            )
     {
+        var stdOut = new List<string>();
+        var stdErr = new List<string>();
+        var timer = new Stopwatch();
+
         using var proc = new Process
         {
             StartInfo = new ProcessStartInfo(prog, args)
@@ -18,24 +28,47 @@ public static class ProcessHelper
                UseShellExecute        = false,
             }
         };
+        proc.OutputDataReceived += (o, e) =>
+        {
+            if (e.Data != null) stdOut.Add(e.Data);
+        };
+        proc.ErrorDataReceived += (o, e) =>
+        {
+            if (e.Data != null) stdErr.Add(e.Data);
+        };
+        proc.EnableRaisingEvents = true;
+        timer.Start();
         proc.Start();
+        proc.BeginOutputReadLine();
+        proc.BeginErrorReadLine();
 
-        var stdOut = new List<string>();
-        while(await proc.StandardOutput.ReadLineAsync() is {} line)
+        bool didTimeOut = false;
+        if (timeout != null)
         {
-            if (stdOut.Count < maxLines) stdOut.Add(line);
+            proc.WaitForExit(timeout.Value);
+            if (!proc.HasExited)
+            {
+                didTimeOut = true;
+                proc.Kill();
+                timer.Stop();
+                return new ProcessResult(-99, stdOut, stdErr)
+                {
+                    Duration = timer.Elapsed,
+                    TimeOutBeforeComplete = true
+                };
+            }
         }
-        var stdErr = new List<string>();
-        while(await proc.StandardError.ReadLineAsync() is {} line)
-        {
-            if (stdErr.Count < maxLines) stdErr.Add(line);
-        }
-        if (!proc.HasExited)
+        else
         {
             await proc.WaitForExitAsync();
         }
+        timer.Stop();
+        return new ProcessResult(proc.ExitCode, stdOut, stdErr)
+        {
+            Duration = timer.Elapsed,
+            TimeOutBeforeComplete = false
+        };
 
-        return new ProcessResult(proc.ExitCode, stdOut, stdErr);
     }
 }
 

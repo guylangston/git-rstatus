@@ -1,30 +1,25 @@
 using System.Collections.Concurrent;
 
-public class GitStatusComponent
+public class GitFolderScanner
 {
     public ConcurrentBag<GitRoot> Roots { get; } = new();
+    public Predicate<string> Exclude { get; init; } = (_)=>false;
 
     public Task Scan(string root, int maxDepth = 4)
     {
-        Func<string, bool> exclude = x => x.Contains("tmux");
-
         void Recurse(string path, int depth)
         {
             try
             {
                 if (Directory.Exists(Path.Combine(path, ".git/")))
                 {
-                    Roots.Add(new GitRoot
-                    {
-                        Path = path,
-                        PathRelative = Path.GetRelativePath(root, path)
-                    });
+                    Roots.Add(new GitRoot(path, Path.GetRelativePath(root, path)));
                 }
                 if (depth <= maxDepth)
                 {
                     foreach(var kid in Directory.GetDirectories(path))
                     {
-                        if (!exclude(kid))
+                        if (!Exclude(kid))
                         {
                             Recurse(kid, depth+1);
                         }
