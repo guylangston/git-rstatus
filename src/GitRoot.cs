@@ -6,6 +6,7 @@ public enum ItemStatus
     Clean,
     Dirty,
     Behind,
+    Pull,
 }
 
 public enum RunStatus
@@ -32,6 +33,7 @@ public class GitRoot
     ProcessResult? gitFetch;
     ProcessResult? gitRemote;
     ProcessResult? gitLog;
+    ProcessResult? gitPull;
 
     public required string Path { get; init;}
     public required string PathRelative { get; init; }
@@ -100,7 +102,12 @@ public class GitRoot
         gitLog = await ProcessHelper.RunYieldingProcessResult("git", "log --pretty=\"(%cd) %s\" --date=relative", Path);
     }
 
-    public async Task Process()
+    public async Task GitPull()
+    {
+        gitPull = await ProcessHelper.RunYieldingProcessResult("git", "pull", Path);
+    }
+
+    public async Task Process(GitStatusApp app)
     {
         try
         {
@@ -121,6 +128,11 @@ public class GitRoot
                 if (gitStatus.StdOut.First().Contains("[behind "))
                 {
                     Status = ItemStatus.Behind;
+                    if (app.HasArg("--pull") || app.HasFlag('p'))
+                    {
+                        await GitPull();
+                        Status = ItemStatus.Pull;
+                    }
                 }
                 else
                 {

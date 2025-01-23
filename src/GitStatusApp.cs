@@ -45,7 +45,7 @@ public class GitStatusApp
         consoleRegion.AllowOverflow = true;
         Render();
 
-        if (HasFlag("-s"))
+        if (HasArg("-s"))
         {
             foreach(var x in comp.Roots)
             {
@@ -63,7 +63,17 @@ public class GitStatusApp
 
     }
 
-    bool HasFlag(string flag) => Args.Length > 0 && Args.Contains(flag);
+    public bool HasArg(string arg) => Args.Length > 0 && Args.Contains(arg);
+    public bool HasFlag(char flag)
+    {
+        foreach(var arg in Args)
+        {
+            if (arg.StartsWith("--")) continue;
+            if (!arg.StartsWith("-")) continue;
+            if (arg.Contains(flag)) return true;
+        }
+        return false;
+    }
 
     private async Task Process(GitStatusComponent comp, string root)
     {
@@ -77,7 +87,7 @@ public class GitStatusApp
             await Task.Run(() =>
             {
                 var buckets = GeneralHelper.CollectInBuckets(comp.Roots, comp.Roots.Count / 4);
-                Task.WaitAll(buckets.Select(x=>ProcessBucket(x)));
+                Task.WaitAll(buckets.Select(x=>ProcessBucket(this, x)));
             });
 
             globalStatus = "Completed";
@@ -88,11 +98,11 @@ public class GitStatusApp
             throw;
         }
 
-        static async Task ProcessBucket(GitRoot[] bucket)
+        static async Task ProcessBucket(GitStatusApp app, GitRoot[] bucket)
         {
             foreach(var dir in bucket)
             {
-                await dir.Process();
+                await dir.Process(app);
             }
         }
     }
@@ -105,6 +115,7 @@ public class GitStatusApp
         {ItemStatus.Clean,      ConsoleColor.DarkGreen},
         {ItemStatus.Dirty,      ConsoleColor.Yellow},
         {ItemStatus.Behind,     ConsoleColor.Cyan},
+        {ItemStatus.Pull,       ConsoleColor.Magenta},
     };
 
     /// <summary>Render to the console</summary>
@@ -134,7 +145,7 @@ public class GitStatusApp
             {
                 consoleRegion.ForegroundColor = Colors[item.Status];
             }
-            consoleRegion.WriteLine(txtStatusLine);
+            consoleRegion.WriteLine(txtStatusLine, true);
             consoleRegion.ForegroundColor = consoleRegion.StartFg;
             cc++;
             if (!consoleRegion.AllowOverflow && cc >= consoleRegion.Height - 2) break;
