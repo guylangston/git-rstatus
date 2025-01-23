@@ -1,6 +1,6 @@
 public enum ItemStatus
 {
-    Discovered,
+    Discover,
     Checking,
     Ignored,
     Clean,
@@ -35,7 +35,7 @@ public class GitRoot
 
     public required string Path { get; init;}
     public required string PathRelative { get; init; }
-    public ItemStatus Status { get; set; } = ItemStatus.Discovered;
+    public ItemStatus Status { get; set; } = ItemStatus.Discover;
     public RunStatus StatusRunning { get; set; } = RunStatus.Pending;
     public Exception? Error { get; private set; }
 
@@ -46,14 +46,14 @@ public class GitRoot
     public string StatusLine()
     {
         if (StatusRunning == RunStatus.Error) return $"<ERROR> {Error?.Message}";
-        if (Status == ItemStatus.Discovered) return "Pending...";
+        if (Status == ItemStatus.Discover) return "Pending...";
         if (Status == ItemStatus.Ignored)  return "";
         if (gitStatus != null)
         {
             if (Status == ItemStatus.Behind) return gitStatus.FirstLineOrError();
             if (Status == ItemStatus.Dirty && gitStatus.StdOut.Count > 1)
             {
-                return $"({gitStatus.StdOut.Count-1}) {gitStatus.StdOut[1]}";
+                return $"[{gitStatus.StdOut.Count-1} files] {gitStatus.StdOut[1]}";
             }
         }
         if (Status == ItemStatus.Checking) return "$git fetch";

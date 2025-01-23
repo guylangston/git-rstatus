@@ -21,11 +21,11 @@ public static class ProcessHelper
         proc.Start();
 
         var stdOut = new List<string>();
-        var stdErr = new List<string>();
         while(await proc.StandardOutput.ReadLineAsync() is {} line)
         {
             if (stdOut.Count < maxLines) stdOut.Add(line);
         }
+        var stdErr = new List<string>();
         while(await proc.StandardError.ReadLineAsync() is {} line)
         {
             if (stdErr.Count < maxLines) stdErr.Add(line);
