@@ -10,14 +10,16 @@
     - [ ] 256-color support
     - [ ] fast rendering (ncurses, etc)
     - [ ] Detect non-interactive then drop colors
+    - [ ] Render a braile-style spinner on global progress line
 - Git commands
     - [x] `git fetch`
     - [x] `git pull` only if behind and not dirty
     - [ ] `git remote` icons for github, etc
 - [ ] Export to json
 - [ ] Async scan phase
-- [ ] `--exclude path,path,path`
-- [ ] `--help` text and man-style doc file
+- [x] `--exclude path,path,path`
+- [x] `--help` text and man-style doc file
+- [ ] Support shell command completion
 
 ## Wish List (not current plan for implementation)
 
@@ -38,9 +40,11 @@
 # Command line options
 
 ```bash
-    --no-fetch *                # dont `git fetch` before `git status`
+git-status -<switched> --<params> path path path
+    --no-fetch-all              # dont `git fetch` before `git status`
     --no-fetch path,path        # same as above, but only on matching path
     -p --pull                   # pull (if status is not dirty)
-    --exclude path,path      # dont process repos containing these strings
-    -s --summary                # display a summary at the end
+    --exclude path,path         # dont process repos containing these strings
+    --depth number              # don't recurse deeper than `number`
+    -a --abs                    # show absolute paths
 ```

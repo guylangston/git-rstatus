@@ -2,7 +2,7 @@ using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Text;
 
-public class GitStatusApp
+public class GitStatusApp : IDisposable
 {
     DynamicConsoleRegion consoleRegion = new()
     {
@@ -12,6 +12,7 @@ public class GitStatusApp
     bool scanComplete;
     string? globalStatus;
     GitRoot[]? gitRoots;
+    Spinner spinner = new();
     ILogger logger = Program.LoggerFactory.GetLogger<GitStatusApp>();
 
 
@@ -38,6 +39,10 @@ public class GitStatusApp
                     if (next.StartsWith('-')) throw new InvalidDataException("--no-fetch must be followed with a path");
                     ArgNoFetch.AddRange(next.Split(','));
                     i++;
+                }
+                else if (arg == "--no-fetch-all")
+                {
+                    ArgNoFetch.Add("*");
                 }
                 else
                 {
@@ -69,6 +74,7 @@ public class GitStatusApp
     public List<string> ArgNoFetch { get; } = new();
     public bool ArgRemote { get; set; }
     public bool ArgPull => ArgAllFlags.Contains('p') || ArgAllParams.Contains("--pull");
+    public bool ArgHelp => ArgAllFlags.Contains('?') ||  ArgAllFlags.Contains('h') || ArgAllParams.Contains("--help");
     public int ArgMaxDepth { get; } = 8;
 
     public IReadOnlyList<GitRoot> Roots => gitRoots ?? throw new NullReferenceException("gitRoots. Scan expected first");
@@ -85,6 +91,12 @@ public class GitStatusApp
     /// <summary>Should not be async - run on main thread</summary>
     public int Run()
     {
+        if (ArgHelp)
+        {
+            DisplayHelp();
+            return 0;
+        }
+
         timer.Start();
         logger.Log("Run: Init");
         consoleRegion.Init(3);
@@ -97,6 +109,11 @@ public class GitStatusApp
         {
             if (scanComplete && !resize)
             {
+                if (Roots.Count == 0)
+                {
+                    Console.WriteLine("No `.git` folders found.");
+                    return 2;
+                }
                 logger.Log("Run: ReInit/Resize");
                 // First draw after scanning resizes the dynamic console region
                 consoleRegion.WriteLine($"[git-status] found {Roots.Count}, fetching...");
@@ -110,6 +127,11 @@ public class GitStatusApp
         {
             Console.Error.WriteLine(process.Exception);
             return 1;
+        }
+        if (Roots.Count == 0)
+        {
+            Console.WriteLine("No `.git` folders found.");
+            return 2;
         }
 
         // Final Render
@@ -191,6 +213,26 @@ public class GitStatusApp
         }
     }
 
+
+    string? GetVersion() => System.Reflection.Assembly.GetExecutingAssembly().GetName().Version?.ToString()[..^2];
+    string GetProjectDescription() => "Fast recursive git status (with fetch and pull)";
+
+    public void DisplayHelp()
+    {
+        Console.WriteLine(
+        $"""
+        git-status: {GetProjectDescription()}
+           version: {GetVersion()}
+
+        git-status -switch --param path1 path2 path3
+            --no-fetch-all              # dont `git fetch` before `git status`
+            --no-fetch path,path        # same as above, but only on matching path
+            -p --pull                   # pull (if status is not dirty)
+            --exclude path,path         # dont process repos containing these strings
+            --depth number              # don't recurse deeper than `number`
+        """);
+    }
+
     static Dictionary<ItemStatus, ConsoleColor> Colors = new()
     {
         {ItemStatus.Discover,   ConsoleColor.DarkBlue},
@@ -209,7 +251,7 @@ public class GitStatusApp
     {
         consoleRegion.StartDraw();
 
-        if (gitRoots == null) return;
+        if (gitRoots == null || gitRoots.Length == 0) return;
 
         var maxPath = Roots.Max(x=>x.PathRelative.Length);
         var sizePath = Math.Min(maxPath, Math.Min(80, consoleRegion.Width / 2));
@@ -240,7 +282,12 @@ public class GitStatusApp
 
         // Status Line
         var donr = Roots.Count(x=>x.IsComplete);
-        consoleRegion.WriteLine($"[{globalStatus,9}] Items {donr}/{Roots.Count} in {timer.Elapsed.TotalSeconds:0.0} sec");
+        consoleRegion.WriteLine($"[{spinner.Next()}] [{globalStatus,9}] Items {donr}/{Roots.Count} in {timer.Elapsed.TotalSeconds:0.0} sec");
+    }
+
+    public void Dispose()
+    {
+        consoleRegion.Dispose();
     }
 }
 
