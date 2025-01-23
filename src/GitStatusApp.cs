@@ -99,11 +99,11 @@ public class GitStatusApp
 
     static Dictionary<ItemStatus, ConsoleColor> Colors = new()
     {
-        {ItemStatus.Discover,   ConsoleColor.Gray},
+        {ItemStatus.Discover,   ConsoleColor.DarkBlue},
         {ItemStatus.Checking,   ConsoleColor.DarkCyan},
         {ItemStatus.Ignored,    ConsoleColor.DarkGray},
         {ItemStatus.Clean,      ConsoleColor.DarkGreen},
-        {ItemStatus.Dirty,      ConsoleColor.DarkYellow},
+        {ItemStatus.Dirty,      ConsoleColor.Yellow},
         {ItemStatus.Behind,     ConsoleColor.Cyan},
     };
 
@@ -114,7 +114,8 @@ public class GitStatusApp
     {
         consoleRegion.StartDraw();
 
-        var sizePath = Math.Min(80, consoleRegion.Width / 2);
+        var maxPath = comp.Roots.Max(x=>x.PathRelative.Length);
+        var sizePath = Math.Min(maxPath, Math.Min(80, consoleRegion.Width / 2));
         int cc = 0;
         foreach(var item in comp.Roots.OrderBy(x=>x.Path))
         {
@@ -123,15 +124,18 @@ public class GitStatusApp
             var txtPath = StringHelper.ElipseAtStart(path, sizePath, "__").PadRight(sizePath);
             var txtStatusLine =  item.StatusLine();
 
-            consoleRegion.Write($"{cc,3} ");
             consoleRegion.ForegroundColor = Colors[item.Status];
             consoleRegion.Write(item.Status.ToString().PadRight(8));
             consoleRegion.ForegroundColor = consoleRegion.StartFg;
             consoleRegion.Write(" ");
             consoleRegion.Write(txtPath);
             consoleRegion.Write(" ");
-            if (!consoleRegion.WriteLine(txtStatusLine)) break;
-
+            if (item.Status == ItemStatus.Dirty || item.Status == ItemStatus.Behind)
+            {
+                consoleRegion.ForegroundColor = Colors[item.Status];
+            }
+            consoleRegion.WriteLine(txtStatusLine);
+            consoleRegion.ForegroundColor = consoleRegion.StartFg;
             cc++;
             if (!consoleRegion.AllowOverflow && cc >= consoleRegion.Height - 2) break;
 

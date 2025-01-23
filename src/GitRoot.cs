@@ -46,7 +46,7 @@ public class GitRoot
     public string StatusLine()
     {
         if (StatusRunning == RunStatus.Error) return $"<ERROR> {Error?.Message}";
-        if (Status == ItemStatus.Discover) return "Pending...";
+        if (Status == ItemStatus.Discover) return "";
         if (Status == ItemStatus.Ignored)  return "";
         if (gitStatus != null)
         {
@@ -56,7 +56,7 @@ public class GitRoot
                 return $"[{gitStatus.StdOut.Count-1} files] {gitStatus.StdOut[1]}";
             }
         }
-        if (Status == ItemStatus.Checking) return "$git fetch";
+        if (Status == ItemStatus.Checking) return "";
         if (Status == ItemStatus.Clean)
         {
             if (gitLog != null)
