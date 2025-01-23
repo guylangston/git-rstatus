@@ -2,7 +2,6 @@ public class DynamicConsoleRegion : IDisposable
 {
     int initialLine;
     int skipped;
-    int regionStart;
     int frame;
 
     public int RequestedHeight { get; private set; }

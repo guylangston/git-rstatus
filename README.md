@@ -9,8 +9,8 @@
     - [x] 16-color support
     - [ ] 256-color support
     - [ ] fast rendering (ncurses, etc)
-    - [ ] Detect non-interactive then drop colors
-    - [ ] Render a braile-style spinner on global progress line
+    - [ ] Detect non-interactive then drop colors and dynamic rendering
+    - [x] Render a braile-style spinner on global progress line
 - Git commands
     - [x] `git fetch`
     - [x] `git pull` only if behind and not dirty
@@ -31,7 +31,7 @@
 
 ## Project Tasks
 - Manual Publish
-    - [ ] Publish linux release on GitHub
+    - [x] Publish linux release on GitHub
     - [ ] Publish windows release on GitHub
     - [ ] Publish to arch `AUR`
     - [ ] Publish to windows `scoop` package manager

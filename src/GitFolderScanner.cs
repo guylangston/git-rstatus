@@ -31,12 +31,13 @@ public class GitFolderScanner
             {
                 // Skip
             }
+#if DEBUG
             catch (Exception)
             {
-                var stop = 1;
                 throw;
             }
         }
+#endif
         Recurse(root, 0);
 
         return Task.CompletedTask;
