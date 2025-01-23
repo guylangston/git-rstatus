@@ -1,8 +1,12 @@
 using System.Diagnostics;
 
+public record ProcessResult(int ExitCode, List<string> StdOut, List<string> StdErr)
+{
+}
+
 public static class ProcessHelper
 {
-    public static async Task<string[]> RunYieldingStdOut(string prog, string args, string? directory = null)
+    public static async Task<ProcessResult> RunYieldingProcessResult(string prog, string args, string? directory = null, int maxLines = 100)
     {
         using var proc = new Process
         {
@@ -16,16 +20,22 @@ public static class ProcessHelper
         };
         proc.Start();
 
-        var res = new List<string>();
+        var stdOut = new List<string>();
+        var stdErr = new List<string>();
         while(await proc.StandardOutput.ReadLineAsync() is {} line)
         {
-            res.Add(line);
+            if (stdOut.Count < maxLines) stdOut.Add(line);
         }
         while(await proc.StandardError.ReadLineAsync() is {} line)
         {
-            res.Add(line);
+            if (stdErr.Count < maxLines) stdErr.Add(line);
         }
-        return res.ToArray();
+        if (!proc.HasExited)
+        {
+            await proc.WaitForExitAsync();
+        }
+
+        return new ProcessResult(proc.ExitCode, stdOut, stdErr);
     }
 }
 

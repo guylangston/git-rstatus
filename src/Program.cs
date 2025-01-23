@@ -40,6 +40,12 @@ public static class Program
             }
         }
 
+        var firstError = comp.Roots.FirstOrDefault(x=>x.Error != null);
+        if (firstError != null)
+        {
+            Console.Error.WriteLine(firstError.Error);
+        }
+
         return 0;
 
         bool HasFlag(string flag) => args.Length > 0 && args.Contains(flag);
@@ -67,7 +73,7 @@ public static class Program
             throw;
         }
 
-        async Task ProcessBucket(GitRoot[] bucket)
+        static async Task ProcessBucket(GitRoot[] bucket)
         {
             foreach(var dir in bucket)
             {
@@ -94,11 +100,11 @@ public static class Program
         Console.SetCursorPosition(0, lineStart.Top);
         var takeMax = Math.Min(Console.WindowHeight - lineStart.Top - 2, comp.Roots.Count);
 
-        var part1Size = Console.WindowWidth / 2;
+        var part1Size = Math.Min(30, Console.WindowWidth / 2);
         foreach(var item in comp.Roots.OrderBy(x=>x.Path).Take(takeMax))
         {
             var path = "./" + item.PathRelative;
-            var part1 = StringHelper.ElipseAtStart(path, part1Size, "__").PadLeft(part1Size);
+            var part1 = StringHelper.ElipseAtStart(path, part1Size, "__").PadRight(part1Size);
             var part2 =  item.StatusLine();
             Console.Write(part1);
             Console.Write(" ");
@@ -111,7 +117,7 @@ public static class Program
             Console.Write(item.Status.ToString().PadRight(7));
             Console.ForegroundColor = StartFg;
             Console.Write(" ");
-            Console.WriteLine(part2);
+            Console.WriteLine(part2.PadRight(Console.WindowWidth - part1Size - 10));
         }
 
         // Status Line
