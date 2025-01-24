@@ -2,6 +2,10 @@ using System.Diagnostics;
 
 public record ProcessResult(int ExitCode, List<string> StdOut, List<string> StdErr)
 {
+    public string? Name { get; set; }
+    public string Command { get; set; }
+    public string CommandArgs { get; set; }
+    public DateTime Started { get; set; }
     public TimeSpan Duration { get; init; }
     public bool TimeOutBeforeComplete { get; set; }
 
@@ -46,6 +50,7 @@ public static class ProcessRunner
         };
         proc.EnableRaisingEvents = true;
         timer.Start();
+        var start = DateTime.Now;
         proc.Start();
         proc.BeginOutputReadLine();
         proc.BeginErrorReadLine();
@@ -71,7 +76,10 @@ public static class ProcessRunner
         timer.Stop();
         return new ProcessResult(proc.ExitCode, stdOut, stdErr)
         {
+            Command = prog,
+            CommandArgs = args,
             Duration = timer.Elapsed,
+            Started = start,
             TimeOutBeforeComplete = false
         };
 

@@ -1,3 +1,5 @@
+using System.Diagnostics;
+
 public enum ItemStatus
 {
     None,
@@ -62,10 +64,12 @@ public class GitRoot
     public ItemStatus Status { get; set; } = ItemStatus.Found;
     public RunStatus StatusRunning { get; set; } = RunStatus.Pending;
     public Exception? Error { get; private set; }
+    public TimeSpan Duration { get; private set; }
 
     public bool IsComplete => StatusRunning == RunStatus.Complete || StatusRunning == RunStatus.Error;
     public string? LogFirstLine => gitLog?.StdOut.FirstOrDefault();
 
+    public DateTime Started { get; private set; }
 
     private async Task<ProcessResult> RunYielding(string cmd, string args)
     {
@@ -195,8 +199,11 @@ public class GitRoot
 
     public async Task Process(GitStatusApp app)
     {
+        Started = DateTime.Now;
+        var timer = new Stopwatch();
         try
         {
+            timer.Start();
             StatusRunning = RunStatus.Running;
             if (Status == ItemStatus.Ignore)
             {
@@ -266,6 +273,8 @@ public class GitRoot
         }
         finally
         {
+            timer.Stop();
+            Duration = timer.Elapsed;
             if (StatusRunning != RunStatus.Error) StatusRunning = RunStatus.Complete;
         }
     }

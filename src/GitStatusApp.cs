@@ -140,6 +140,7 @@ public class GitStatusApp : IDisposable
         timer.Stop();
         consoleRegion.AllowOverflow = true;
         Render();
+        Console.WriteLine();
 
         var firstError = Roots.FirstOrDefault(x=>x.Error != null);
         if (firstError != null)
@@ -151,7 +152,21 @@ public class GitStatusApp : IDisposable
             }
         }
 
+        WriteSummary();
+
         return 0;
+    }
+
+    private void WriteSummary()
+    {
+        foreach(var item in Roots)
+        {
+            logger.Log($"{item.Started:u} {item.Path,40}|{item.Status}| {item.Duration.TotalSeconds:0.0}sec -- {item.StatusLine()}");
+            /* foreach(var exec in item.GetProcessResults()) */
+            /* { */
+            /*     logger.Log($"\t[{exec.Duration.TotalSeconds:0.0}]{exec.Name}:{exec.Command} {exec.CommandArgs} => {exec.ExitCode}"); */
+            /* } */
+        }
     }
 
     private async Task ScanAndQueryAllRoots()
@@ -188,11 +203,13 @@ public class GitStatusApp : IDisposable
             scanComplete = true;
 
             globalStatus = "Processing";
-            await Task.Run(() =>
+            var buckets = GeneralHelper.CollectInBuckets(Roots, Roots.Count / ArgThreadCount).ToArray();
+            var cc=0;
+            foreach(var b in buckets)
             {
-                var buckets = GeneralHelper.CollectInBuckets(Roots, Roots.Count / ArgThreadCount);
-                Task.WaitAll(buckets.Select(x=>ProcessBucket(this, x)));
-            });
+                logger.Log($"Bucket[{cc}] ({string.Join(',', b.Select(x=>x.Path))}");
+            }
+            await Parallel.ForEachAsync(buckets, (async (x, cts)=>await ProcessBucket(this, x)));
 
             globalStatus = "Completed";
         }
