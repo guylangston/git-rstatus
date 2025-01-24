@@ -314,7 +314,7 @@ public class GitStatusApp : IDisposable
         consoleRegion.BackgroundColor = ConsoleColor.DarkBlue;
         consoleRegion.WriteLine(
                 $"{globalStatus,9} [{spinner.Next()}] Items {donr}/{Roots.Count} in {timer.Elapsed.TotalSeconds:0.0} sec"
-                        .PadRight(table.Columns.Take(3).Sum(x=>x.Size ?? 10) + sep.Length*3)
+                        .PadRight(table.Columns.Sum(x=>x.Size ?? 10) + (sep.Length*table.Columns.Count-1))
                 );
     }
 
