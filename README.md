@@ -2,6 +2,8 @@
 
 > Fast recursive scan for all git repos. Async `git fetch && git status`
 
+![Screenshot](./doc/screenshot-0.3.0.jpeg)
+
 ## Feature List - CLI
 
 - Terminal Rendering
