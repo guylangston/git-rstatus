@@ -4,7 +4,7 @@ public enum ItemStatus
     Found,
     Check,
     Ignore,
-    Clean,
+    UpToDate,
     Dirty,
     Behind,
     Ahead, // TODO
@@ -69,7 +69,7 @@ public class GitRoot
             }
         }
         if (Status == ItemStatus.Check) return "";
-        if (Status == ItemStatus.Clean)
+        if (Status == ItemStatus.UpToDate)
         {
             if (gitLog != null)
             {
@@ -167,32 +167,37 @@ public class GitRoot
                     Status = ItemStatus.Behind;
                     if (app.ArgPull)
                     {
-                        await GitPull();
                         Status = ItemStatus.Pull;
+                        await GitPull();
+                        return;
                     }
                 }
                 if (lineOne.Contains("[ahead "))
                 {
                     Status = ItemStatus.Ahead;
+                    return;
                 }
                 else
                 {
                     // clean
                     await GitLog();
-                    Status = ItemStatus.Clean;
+                    Status = ItemStatus.UpToDate;
+                    return;
                 }
             }
             else
             {
                 Status = ItemStatus.Dirty;
             }
-
-            StatusRunning = RunStatus.Complete;
         }
         catch(Exception ex)
         {
             StatusRunning = RunStatus.Error;
             Error = ex;
+        }
+        finally
+        {
+            if (StatusRunning != RunStatus.Error) StatusRunning = RunStatus.Complete;
         }
     }
 }

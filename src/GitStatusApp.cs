@@ -240,7 +240,7 @@ public class GitStatusApp : IDisposable
         {ItemStatus.Found,  ConsoleColor.DarkBlue},
         {ItemStatus.Check,  ConsoleColor.DarkCyan},
         {ItemStatus.Ignore, ConsoleColor.DarkGray},
-        {ItemStatus.Clean,  ConsoleColor.DarkGreen},
+        {ItemStatus.UpToDate,  ConsoleColor.DarkGreen},
         {ItemStatus.Dirty,  ConsoleColor.Red},
         {ItemStatus.Behind, ConsoleColor.Cyan},
         {ItemStatus.Ahead,  ConsoleColor.Yellow},
@@ -284,7 +284,7 @@ public class GitStatusApp : IDisposable
                         }
                         if (col.Index == 2)
                         {
-                            if ((int)row.RowData.Status >= 3)
+                            if ((int)row.RowData.Status > 3)
                             {
                                 consoleRegion.ForegroundColor = Colors[row.RowData.Status];
                             }
