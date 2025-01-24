@@ -7,12 +7,13 @@ public class GitStatusApp : IDisposable
     DynamicConsoleRegion consoleRegion = new()
     {
         SafeDraw = false,
+        Logger = Program.LoggerFactory.GetLogger<DynamicConsoleRegion>(),
     };
     Stopwatch timer = new();
     bool scanComplete;
     string? globalStatus;
     GitRoot[]? gitRoots;
-    Spinner spinner = new(0.2f);
+    Spinner spinner = new(1);
     ILogger logger = Program.LoggerFactory.GetLogger<GitStatusApp>();
 
     public GitStatusApp(string[] args)
@@ -274,7 +275,10 @@ public class GitStatusApp : IDisposable
         }
         table.CalcColumnSizes();
         var sep = " │ ";
-        foreach(var row in table.Rows)
+        var take = consoleRegion.AllowOverflow
+            ? table.Rows.Count
+            : consoleRegion.Height-1;
+        foreach(var row in table.Rows.Take(take))
         {
             if (row.RowData == null) throw new ArgumentNullException();
             var data = row.RowData;
@@ -312,10 +316,12 @@ public class GitStatusApp : IDisposable
         var donr = Roots.Count(x=>x.IsComplete);
         consoleRegion.ForegroundColor = ConsoleColor.White;
         consoleRegion.BackgroundColor = ConsoleColor.DarkBlue;
-        consoleRegion.WriteLine(
-                $"{globalStatus,9} [{spinner.Next()}] Items {donr}/{Roots.Count} in {timer.Elapsed.TotalSeconds:0.0} sec"
-                        .PadRight(table.Columns.Sum(x=>x.Size ?? 10) + (sep.Length*table.Columns.Count-1))
+        consoleRegion.Write(
+                $" >> {globalStatus,9} [{spinner.Next()}] Items {donr}/{Roots.Count} in {timer.Elapsed.TotalSeconds:0.0} sec"
+                        /* .PadRight(table.Columns.Sum(x=>x.Size ?? 10) + (sep.Length*table.Columns.Count-1)) */
                 );
+        consoleRegion.Revert();
+        consoleRegion.Write("...");
     }
 
     public void Dispose()

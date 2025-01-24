@@ -1,6 +1,6 @@
 public class DynamicConsoleRegion : IDisposable
 {
-    int initialLine;
+    int initialCursorLine;
     int skipped;
     int frame;
 
@@ -9,6 +9,7 @@ public class DynamicConsoleRegion : IDisposable
     public int FreeLines { get; private set; }
     public int Width => Console.WindowWidth;
     public bool AllowOverflow { get; set; } = false;
+    public ILogger? Logger { get; set; } = null;
 
     /// <summary>Safe will clear the screen before drawing</summary>
     public bool SafeDraw { get; set; } = true;
@@ -32,7 +33,7 @@ public class DynamicConsoleRegion : IDisposable
     /// <summary>Prepare state. Capture initial cursor size</summary>
     public void Init(int requestedHeight)
     {
-        initialLine = Console.CursorTop;
+        initialCursorLine = Console.CursorTop;
         StartFg = Console.ForegroundColor;
         StartBg = Console.BackgroundColor;
 
@@ -42,8 +43,9 @@ public class DynamicConsoleRegion : IDisposable
     public void ReInit(int newSize)
     {
         if (newSize <= 0) throw new InvalidDataException(newSize.ToString());
+
         // Q: How much size is available?
-        var availableLines = Console.WindowHeight - initialLine - 1;
+        var availableLines = Console.WindowHeight - initialCursorLine - 1;
             // -1 because we never want to use the very last line.
             // as WriteLine() on the last line will cause a automatic newline
             // TODO: In future we could finesse this away
@@ -51,22 +53,41 @@ public class DynamicConsoleRegion : IDisposable
         // Q: How much size can be assigned?
         if (availableLines >= newSize)
         {
+            Logger?.Log($"ReInit({newSize}) IntialCursor:{initialCursorLine} CursorTop:{Console.CursorTop}, WindowHeight:{Console.WindowHeight}");
+            Logger?.Log($"  -> No Resize");
             RequestedHeight = newSize;
             FreeLines = Height = newSize;
         }
         else
         {
             RequestedHeight = newSize;
-            while(availableLines < newSize && initialLine > 0)
+            Console.CursorTop = initialCursorLine;
+            availableLines = 0;
+            Logger?.Log($"ReInit({newSize}) IntialCursor:{initialCursorLine} CursorTop:{Console.CursorTop}, WindowHeight:{Console.WindowHeight}");
+            while(availableLines <= newSize && initialCursorLine > 0)
             {
-                if (Console.CursorTop >= Console.WindowHeight-1)
-                {
-                    Console.WriteLine(); // Add a new line, scrolling the window up
-                    initialLine--;
-                }
-                availableLines++;
-            }
+                var lastLine = Console.WindowHeight-1;
+                if (initialCursorLine == 0) break;
 
+                if (Console.CursorTop < lastLine)
+                {
+                    Console.WriteLine();
+                    availableLines++;
+                    Logger?.Log($"  -> WriteLine()::NoScroll");
+                }
+                else
+                {
+                    Console.WriteLine();
+                    availableLines++;
+                    // Did adding the new line cause the windows to scroll up?
+                    // Yes - if the cursor is on the last line
+                    initialCursorLine--;
+                    Logger?.Log($"  -> WriteLine()::ScrollOne - initialCursorLine:{initialCursorLine}");
+                }
+                Logger?.Log($"  -> IntialCursor:{initialCursorLine} CursorTop:{Console.CursorTop}, WindowHeight:{Console.WindowHeight}, availableLines:{availableLines}");
+            }
+            Console.CursorTop = initialCursorLine;
+            Logger?.Log($"ReInit({newSize}) DONE: IntialCursor:{initialCursorLine} CursorTop:{Console.CursorTop}, WindowHeight:{Console.WindowHeight}, avail:{availableLines}");
             FreeLines = Height = availableLines;
         }
     }
@@ -75,7 +96,7 @@ public class DynamicConsoleRegion : IDisposable
     public void StartDraw()
     {
         // Clear and Reset
-        Console.SetCursorPosition(0, initialLine);
+        Console.SetCursorPosition(0, initialCursorLine);
         Console.CursorVisible = false;
         Revert();
 
@@ -86,7 +107,7 @@ public class DynamicConsoleRegion : IDisposable
             {
                 Console.WriteLine(emptyLine);
             }
-            Console.SetCursorPosition(0, initialLine);
+            Console.SetCursorPosition(0, initialCursorLine);
         }
         FreeLines = Height;
         skipped = 0;
@@ -102,6 +123,8 @@ public class DynamicConsoleRegion : IDisposable
 
     public bool Write(string s)
     {
+        if (FreeLines < 1 && !AllowOverflow) return false;
+
         // Don't allow wrapping
         var remaining = Console.WindowWidth - Console.CursorLeft;
         if (s.Length >= remaining)
