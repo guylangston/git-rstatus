@@ -8,6 +8,8 @@ public interface IHeader
 }
 public class Header : IHeader
 {
+    public Header() { }
+
     public Header(string? title, int? sizeMin = null, int? sizeMax = null)
     {
         Title = title;
@@ -20,13 +22,13 @@ public class Header : IHeader
     public int? SizeMax { get; set; }
 }
 
-public class TableRenderer<THeader, TCell> where THeader : IHeader
+public class TableRenderer<THeader, TCell> where THeader : IHeader, new()
 {
-    public List<THeader> Headers { get; } = new();
+    public List<THeader> Columns { get; } = new();
     public List<List<TCell>> Rows { get; } = new();
 
     public int RowCount => Rows.Count;
-    public virtual int Columns => Rows.Count == 0 ? 0 : Rows.Max(x=>x.Count);
+    public virtual int ColumnsCount => Rows.Count == 0 ? 0 : Rows.Max(x=>x.Count);
     public virtual int ColumnMax => Rows.Where(x=>x.Count > 0).Max(row=>row.Count == 0 ? 0 :  row.Max(Measure));
 
     public void Clear()
@@ -74,11 +76,11 @@ public class TableRenderer<THeader, TCell> where THeader : IHeader
 
     public virtual int[] GetColumnSizes()
     {
-        return Enumerable.Range(0, Columns)
+        return Enumerable.Range(0, ColumnsCount)
             .Select(colIdx=>
                     {
                         var max = 0;
-                        var header =  (colIdx < Headers.Count) ? Headers[colIdx] : (THeader?)default(THeader);
+                        var header =  (colIdx < Columns.Count) ? Columns[colIdx] : (THeader?)default(THeader);
                         if (header != null && header.SizeMin != null) max = header.SizeMin.Value;
                         foreach(var cell in GetColumnCells(colIdx))
                         {
@@ -96,53 +98,62 @@ public class TableRenderer<THeader, TCell> where THeader : IHeader
             .ToArray();
     }
 
-    public virtual IEnumerable<string> RenderToString(string sep = " │ ")
+    public virtual
+        IEnumerable<IReadOnlyList<(THeader Header, string CellText)>>
+        RenderCells()
     {
-        StringBuilder sb = new();
+        List<(THeader, string)> line = new ();
         var colSize = GetColumnSizes();
 
-        if (Headers.Any())
+        // Ensure Column definition
+        while(Columns.Count < ColumnsCount)
         {
-            sb.Append(sep);
+            Columns.Add(new THeader());
+        }
+
+        if (Columns.Any())
+        {
             var col = 0;
-            foreach(var header in Headers)
+            foreach(var header in Columns)
             {
                 var cell = header.Title ?? "";
                 if (cell.Length <= colSize[col])
                 {
-                    sb.Append(cell.PadRight(colSize[col]));
+                    var txt = cell.PadRight(colSize[col]);
+                    line.Add( (header,txt) );
                 }
                 else
                 {
-                    sb.Append(cell[0..colSize[col]]);
+                    var txt = cell[0..colSize[col]];
+                    line.Add( (header,txt) );
                 }
-                sb.Append(sep);
                 col++;
             }
-            yield return sb.ToString();
+            yield return line;
         }
 
         foreach(var row in Rows)
         {
             if (row.Count == 0) continue;
-            sb.Clear();
-            sb.Append(sep);
+            line.Clear();
             for(var col=0; col<colSize.Length; col++)
             {
-                if (row.Count < col) break;
-
-                var cell = row[col]?.ToString() ?? "";
-                if (cell.Length <= colSize[col])
+                var header = Columns[col];
+                if (row.Count < col)
                 {
-                    sb.Append(cell.PadRight(colSize[col]));
+                    // TODO add blank cell
                 }
                 else
                 {
-                    sb.Append(cell[0..colSize[col]]);
+                    var cell = row[col]?.ToString() ?? "";
+                    var cellText = (cell.Length <= colSize[col])
+                        ? cell.PadRight(colSize[col])
+                        : cell[0..colSize[col]];
+                    line.Add( (header, cellText) );
                 }
-                sb.Append(sep);
+
             }
-            yield return sb.ToString();
+            yield return line;
         }
     }
 }

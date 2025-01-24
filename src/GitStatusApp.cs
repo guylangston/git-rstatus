@@ -255,21 +255,25 @@ public class GitStatusApp : IDisposable
 
         if (gitRoots == null || gitRoots.Length == 0) return;
 
-        var table = new TableRenderer<Header, string>();
-        table.Headers.Add(new Header("Status", 6));
-        table.Headers.Add(new Header("Path", 30, 60));
-        table.Headers.Add(new Header("Git", 30, 60));
+        var table = new TableRenderer<Header, object>();
+        table.Columns.Add(new Header("Status", 6));
+        table.Columns.Add(new Header("Path", 30, 60));
+        table.Columns.Add(new Header("Git", 30, 60));
         foreach(var item in Roots.OrderBy(x=>x.Path))
         {
             var path = ArgAbs ? item.Path : item.PathRelative;
             var txtStatusLine =  item.StatusLine();
-            table.WriteRow(item.Status.ToString(), path, item.StatusLine());
+            table.WriteRow(item.Status, path, item.StatusLine());
 
             if (!consoleRegion.AllowOverflow && table.RowCount >= consoleRegion.Height - 2) break;
         }
-        foreach(var row in table.RenderToString())
+        foreach(var row in table.RenderCells())
         {
-            consoleRegion.WriteLine(row);
+            foreach(var cell in row)
+            {
+                consoleRegion.Write(cell.CellText);
+            }
+            consoleRegion.WriteLine("");
         }
 
         // Status Line
