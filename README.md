@@ -42,11 +42,15 @@
 # Command line options
 
 ```bash
-git-status -<switched> --<params> path path path
+git-status: Fast recursive git status (with fetch and pull)
+   version: 0.3.0
+
+git-status -switch --param path1 path2 path3
     --no-fetch-all              # dont `git fetch` before `git status`
     --no-fetch path,path        # same as above, but only on matching path
     -p --pull                   # pull (if status is not dirty)
     --exclude path,path         # dont process repos containing these strings
     --depth number              # don't recurse deeper than `number`
-    -a --abs                    # show absolute paths
+    --log                       # create log file (in $PWD)
+    -a --abs                    # use absolute paths
 ```
