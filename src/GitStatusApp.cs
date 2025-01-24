@@ -241,8 +241,9 @@ public class GitStatusApp : IDisposable
         {ItemStatus.Check,  ConsoleColor.DarkCyan},
         {ItemStatus.Ignore, ConsoleColor.DarkGray},
         {ItemStatus.Clean,  ConsoleColor.DarkGreen},
-        {ItemStatus.Dirty,  ConsoleColor.Yellow},
+        {ItemStatus.Dirty,  ConsoleColor.Red},
         {ItemStatus.Behind, ConsoleColor.Cyan},
+        {ItemStatus.Ahead,  ConsoleColor.Yellow},
         {ItemStatus.Pull,   ConsoleColor.Magenta},
     };
 
