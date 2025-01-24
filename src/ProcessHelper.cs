@@ -1,12 +1,16 @@
 using System.Diagnostics;
 
-public record ProcessResult(int ExitCode, List<string> StdOut, List<string> StdErr)
+public record ProcessResult
 {
+    public required int ExitCode { get; init; }
+    public required List<string> StdOut { get; init; }
+    public required List<string> StdErr { get; init; }
+    public required string Command { get; init; }
+    public required string CommandArgs { get; init; }
+    public required DateTime Started { get; init; }
+
     public string? Name { get; set; }
-    public string Command { get; set; }
-    public string CommandArgs { get; set; }
-    public DateTime Started { get; set; }
-    public TimeSpan Duration { get; init; }
+    public TimeSpan Duration { get; set; }
     public bool TimeOutBeforeComplete { get; set; }
 
     public void ThrowOnBadExitCode(string? errorMessage)
@@ -62,8 +66,14 @@ public static class ProcessRunner
             {
                 proc.Kill();
                 timer.Stop();
-                return new ProcessResult(-99, stdOut, stdErr)
+                return new ProcessResult
                 {
+                    ExitCode = -99,
+                    Command = prog,
+                    CommandArgs = args,
+                    StdOut = stdOut,
+                    StdErr = stdErr,
+                    Started = start,
                     Duration = timer.Elapsed,
                     TimeOutBeforeComplete = true
                 };
@@ -74,15 +84,17 @@ public static class ProcessRunner
             await proc.WaitForExitAsync();
         }
         timer.Stop();
-        return new ProcessResult(proc.ExitCode, stdOut, stdErr)
+        return new ProcessResult
         {
+            ExitCode = proc.ExitCode,
+            StdOut = stdOut,
+            StdErr = stdErr,
             Command = prog,
             CommandArgs = args,
             Duration = timer.Elapsed,
             Started = start,
             TimeOutBeforeComplete = false
         };
-
     }
 }
 
