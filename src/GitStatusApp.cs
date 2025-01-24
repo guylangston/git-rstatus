@@ -66,18 +66,18 @@ public class GitStatusApp : IDisposable
         }
     }
 
-    public string[] ArgsRaw { get;  }
-    public string ArgAllFlags { get; init; }
+    public string[]     ArgsRaw { get;  }
+    public string       ArgAllFlags { get; init; }
     public List<string> ArgAllParams { get; } = new();
     public List<string> ArgPath { get; } = new();
     public List<string> ArgExclude { get; } = new();
     public List<string> ArgNoFetch { get; } = new();
-    public bool ArgRemote { get; set; }
-    public bool ArgPull => ArgAllFlags.Contains('p') || ArgAllParams.Contains("--pull");
-    public bool ArgHelp => ArgAllFlags.Contains('?') ||  ArgAllFlags.Contains('h') || ArgAllParams.Contains("--help");
-    public bool ArgAbs => ArgAllFlags.Contains('a') || ArgAllParams.Contains("--abs");
-    public int ArgMaxDepth { get; } = 8;
-    public int ArgThreadCount { get; } = 8;
+    public bool         ArgRemote { get; set; }
+    public int          ArgMaxDepth { get; } = 8;
+    public int          ArgThreadCount { get; } = 8;
+    public bool         ArgPull => ArgAllFlags.Contains('p') || ArgAllParams.Contains("--pull");
+    public bool         ArgHelp => ArgAllFlags.Contains('?') ||  ArgAllFlags.Contains('h') || ArgAllParams.Contains("--help");
+    public bool         ArgAbs  => ArgAllFlags.Contains('a') || ArgAllParams.Contains("--abs");
 
     public IReadOnlyList<GitRoot> Roots => gitRoots ?? throw new NullReferenceException("gitRoots. Scan expected first");
 

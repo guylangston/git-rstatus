@@ -164,6 +164,7 @@ public class GitRoot
             if (Status == ItemStatus.Dirty && gitStatus.StdOut.Count > 1)
             {
                 return $"[{gitStatus.StdOut.Count-1} files] {gitStatus.StdOut[1]}";
+
             }
         }
         if (Status == ItemStatus.Check) return "";
@@ -220,7 +221,7 @@ public class GitRoot
             }
 
             await GitStatus();
-            if (gitStatus != null && gitStatus.StdOut.Count == 1)
+            if (gitStatus != null && gitStatus.StdOut.Count <= 1)
             {
                 var lineOne = gitStatus.FirstLineOrError();
                 if (lineOne.Contains("[behind "))
