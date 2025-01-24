@@ -62,6 +62,7 @@ public class GitRoot
         if (gitStatus != null)
         {
             if (Status == ItemStatus.Behind) return gitStatus.FirstLineOrError();
+            if (Status == ItemStatus.Ahead) return gitStatus.FirstLineOrError();
             if (Status == ItemStatus.Dirty && gitStatus.StdOut.Count > 1)
             {
                 return $"[{gitStatus.StdOut.Count-1} files] {gitStatus.StdOut[1]}";
@@ -160,7 +161,8 @@ public class GitRoot
             await GitStatus();
             if (gitStatus != null && gitStatus.StdOut.Count == 1)
             {
-                if (gitStatus.StdOut.First().Contains("[behind "))
+                var lineOne = gitStatus.FirstLineOrError();
+                if (lineOne.Contains("[behind "))
                 {
                     Status = ItemStatus.Behind;
                     if (app.ArgPull)
@@ -168,6 +170,10 @@ public class GitRoot
                         await GitPull();
                         Status = ItemStatus.Pull;
                     }
+                }
+                if (lineOne.Contains("[ahead "))
+                {
+                    Status = ItemStatus.Ahead;
                 }
                 else
                 {
