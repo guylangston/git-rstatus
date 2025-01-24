@@ -9,6 +9,7 @@ public enum ItemStatus
     Behind,
     Ahead, // TODO
     Pull,
+    Error,
 }
 
 public enum RunStatus
@@ -26,6 +27,17 @@ public static class ProcessResultHelper
         if (result is null) return "<ERR>";
         if (result.StdOut.Count == 0) return "<ERR>";
         return result.StdOut.First();
+    }
+}
+
+public class RecoverableException : Exception
+{
+    public RecoverableException()
+    {
+    }
+
+    public RecoverableException(string? message) : base(message)
+    {
     }
 }
 
@@ -54,11 +66,93 @@ public class GitRoot
     public bool IsComplete => StatusRunning == RunStatus.Complete || StatusRunning == RunStatus.Error;
     public string? LogFirstLine => gitLog?.StdOut.FirstOrDefault();
 
+
+    private async Task<ProcessResult> RunYielding(string cmd, string args)
+    {
+        var res = await ProcessRunner.RunYieldingProcessResult(cmd, args, Path, 50, TimeSpan.FromSeconds(30));
+        logger.Log($"CMD: {cmd} {args} ==> ExitCode:{res.ExitCode} in {res.Duration} [std: {res.StdOut.Count}, err: {res.StdErr.Count}]");
+        if (res.TimeOutBeforeComplete)
+        {
+            logger.Log("CMD-TIMEOUT!");
+        }
+        foreach(var err in res.StdErr)
+        {
+            logger.Log($"ERR: {err}");
+        }
+        foreach(var lin in res.StdOut)
+        {
+            logger.Log(lin);
+        }
+
+        return res;
+    }
+
+    public IEnumerable<ProcessResult> GetProcessResults()
+    {
+        if (gitFetch != null) yield return gitFetch;
+        if (gitStatus != null) yield return gitStatus;
+        if (gitLog != null) yield return gitLog;
+        if (gitRemote != null) yield return gitRemote;
+        if (gitPull != null) yield return gitPull;
+    }
+
+    public async Task GitStatus()
+    {
+        gitStatus = await RunYielding("git", "status -bs");
+        gitStatus.ThrowOnBadExitCode(nameof(gitStatus)); // check after assignement so we still record erros
+    }
+
+    public async Task GitFetch()
+    {
+        gitFetch = await RunYielding("git", "fetch");
+        gitFetch.ThrowOnBadExitCode(nameof(gitFetch)); // check after assignement so we still record erros
+    }
+
+    public async Task GitRemote()
+    {
+        gitRemote = await RunYielding("git", "remote -v");
+        gitRemote.ThrowOnBadExitCode(nameof(gitRemote)); // check after assignement so we still record erros
+    }
+
+    public async Task GitLog()
+    {
+        gitLog = await RunYielding("git", "log --pretty=\"(%cd) %s\" --date=relative -10");
+        gitLog.ThrowOnBadExitCode(nameof(gitLog)); // check after assignement so we still record erros
+    }
+
+    public async Task GitPull()
+    {
+        gitPull = await RunYielding("git", "pull");
+        gitPull.ThrowOnBadExitCode(nameof(gitPull)); // check after assignement so we still record erros
+    }
+
     public string StatusLine()
     {
+        if (Status == ItemStatus.Error)
+        {
+            foreach(var proc in GetProcessResults())
+            {
+                if (proc.StdErr != null && proc.StdErr.FirstOrDefault() is {} firstError)
+                {
+                    return firstError;
+                }
+            }
+            return "Unknown error";
+        }
         if (StatusRunning == RunStatus.Error) return $"<ERROR> {Error?.Message}";
         if (Status == ItemStatus.Found) return "";
-        if (Status == ItemStatus.Ignore)  return "";
+        if (Status == ItemStatus.Ignore)
+        {
+            if (gitLog != null)
+            {
+                return gitLog.FirstLineOrError();
+            }
+            if (gitStatus != null)
+            {
+                return gitStatus.FirstLineOrError();
+            }
+            return "";
+        }
         if (gitStatus != null)
         {
             if (Status == ItemStatus.Behind) return gitStatus.FirstLineOrError();
@@ -99,50 +193,6 @@ public class GitRoot
         return $"{Status}";
     }
 
-    private async Task<ProcessResult> RunYielding(string cmd, string args)
-    {
-        var res = await ProcessRunner.RunYieldingProcessResult(cmd, args, Path, 50, TimeSpan.FromSeconds(30));
-        logger.Log($"CMD: {cmd} {args} ==> ExitCode:{res.ExitCode} in {res.Duration} [std: {res.StdOut.Count}, err: {res.StdErr.Count}]");
-        if (res.TimeOutBeforeComplete)
-        {
-            logger.Log("CMD-TIMEOUT!");
-        }
-        foreach(var err in res.StdErr)
-        {
-            logger.Log($"ERR: {err}");
-        }
-        foreach(var lin in res.StdOut)
-        {
-            logger.Log(lin);
-        }
-        return res;
-    }
-
-    public async Task GitStatus()
-    {
-        gitStatus = await RunYielding("git", "status -bs");
-    }
-
-    public async Task GitFetch()
-    {
-        gitFetch = await RunYielding("git", "fetch");
-    }
-
-    public async Task GitRemote()
-    {
-        gitRemote = await RunYielding("git", "remote -v");
-    }
-
-    public async Task GitLog()
-    {
-        gitLog = await RunYielding("git", "log --pretty=\"(%cd) %s\" --date=relative -10");
-    }
-
-    public async Task GitPull()
-    {
-        gitPull = await RunYielding("git", "pull");
-    }
-
     public async Task Process(GitStatusApp app)
     {
         try
@@ -156,7 +206,11 @@ public class GitRoot
 
             Status = ItemStatus.Check;
             if (app.ArgRemote) await GitRemote();
-            if (app.ShouldFetch(this)) await GitFetch();
+            var fetch = app.ShouldFetch(this);
+            if (fetch)
+            {
+                await GitFetch();
+            }
 
             await GitStatus();
             if (gitStatus != null && gitStatus.StdOut.Count == 1)
@@ -171,18 +225,27 @@ public class GitRoot
                         await GitPull();
                         return;
                     }
+                    return;
                 }
-                if (lineOne.Contains("[ahead "))
+                else if (lineOne.Contains("[ahead "))
                 {
                     Status = ItemStatus.Ahead;
                     return;
                 }
                 else
                 {
-                    // clean
                     await GitLog();
-                    Status = ItemStatus.UpToDate;
-                    return;
+                    if (fetch)
+                    {
+                        Status = ItemStatus.UpToDate;
+                        return;
+                    }
+                    else
+                    {
+                        // did not fetch, do not sure if we are up to date
+                        Status = ItemStatus.Ignore;
+                        return;
+                    }
                 }
             }
             else
@@ -190,8 +253,14 @@ public class GitRoot
                 Status = ItemStatus.Dirty;
             }
         }
+        catch(RecoverableException)
+        {
+            Status = ItemStatus.Error;
+            StatusRunning = RunStatus.Error;
+        }
         catch(Exception ex)
         {
+            Status = ItemStatus.Error;
             StatusRunning = RunStatus.Error;
             Error = ex;
         }

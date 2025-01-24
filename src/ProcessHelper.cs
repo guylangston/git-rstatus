@@ -4,6 +4,14 @@ public record ProcessResult(int ExitCode, List<string> StdOut, List<string> StdE
 {
     public TimeSpan Duration { get; init; }
     public bool TimeOutBeforeComplete { get; set; }
+
+    public void ThrowOnBadExitCode(string? errorMessage)
+    {
+        if (ExitCode != 0)
+        {
+            throw new RecoverableException($"Bad ExitCode({ExitCode}) {errorMessage} | {StdErr.FirstOrDefault()}");
+        }
+    }
 }
 
 public static class ProcessRunner

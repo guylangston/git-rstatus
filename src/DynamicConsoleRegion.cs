@@ -59,7 +59,7 @@ public class DynamicConsoleRegion : IDisposable
             RequestedHeight = newSize;
             while(availableLines < newSize && initialLine > 0)
             {
-                if ((Console.CursorTop+availableLines) >= Console.WindowHeight-1)
+                if (Console.CursorTop >= Console.WindowHeight-1)
                 {
                     Console.WriteLine(); // Add a new line, scrolling the window up
                     initialLine--;

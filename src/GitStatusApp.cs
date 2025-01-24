@@ -76,6 +76,7 @@ public class GitStatusApp : IDisposable
     public bool ArgHelp => ArgAllFlags.Contains('?') ||  ArgAllFlags.Contains('h') || ArgAllParams.Contains("--help");
     public bool ArgAbs => ArgAllFlags.Contains('a') || ArgAllParams.Contains("--abs");
     public int ArgMaxDepth { get; } = 8;
+    public int ArgThreadCount { get; } = 8;
 
     public IReadOnlyList<GitRoot> Roots => gitRoots ?? throw new NullReferenceException("gitRoots. Scan expected first");
 
@@ -117,7 +118,7 @@ public class GitStatusApp : IDisposable
                 logger.Log("Run: ReInit/Resize");
                 // First draw after scanning resizes the dynamic console region
                 consoleRegion.WriteLine($"[git-status] found {Roots.Count}, fetching...");
-                consoleRegion.ReInit(Roots.Count);
+                consoleRegion.ReInit(Roots.Count + 1);
                 resize = true;
             }
             Render();
@@ -188,7 +189,7 @@ public class GitStatusApp : IDisposable
             globalStatus = "Processing";
             await Task.Run(() =>
             {
-                var buckets = GeneralHelper.CollectInBuckets(Roots, Roots.Count / 4);
+                var buckets = GeneralHelper.CollectInBuckets(Roots, Roots.Count / ArgThreadCount);
                 Task.WaitAll(buckets.Select(x=>ProcessBucket(this, x)));
             });
 
@@ -237,14 +238,15 @@ public class GitStatusApp : IDisposable
 
     static Dictionary<ItemStatus, ConsoleColor> Colors = new()
     {
-        {ItemStatus.Found,  ConsoleColor.DarkBlue},
-        {ItemStatus.Check,  ConsoleColor.DarkCyan},
-        {ItemStatus.Ignore, ConsoleColor.DarkGray},
-        {ItemStatus.UpToDate,  ConsoleColor.DarkGreen},
-        {ItemStatus.Dirty,  ConsoleColor.Red},
-        {ItemStatus.Behind, ConsoleColor.Cyan},
-        {ItemStatus.Ahead,  ConsoleColor.Yellow},
-        {ItemStatus.Pull,   ConsoleColor.Magenta},
+        {ItemStatus.Found,    ConsoleColor.DarkBlue},
+        {ItemStatus.Check,    ConsoleColor.DarkCyan},
+        {ItemStatus.Ignore,   ConsoleColor.DarkGray},
+        {ItemStatus.UpToDate, ConsoleColor.DarkGreen},
+        {ItemStatus.Dirty,    ConsoleColor.DarkRed},
+        {ItemStatus.Behind,   ConsoleColor.Cyan},
+        {ItemStatus.Ahead,    ConsoleColor.Yellow},
+        {ItemStatus.Pull,     ConsoleColor.Magenta},
+        {ItemStatus.Error,    ConsoleColor.Red},
     };
 
     /// <summary>Render to the console</summary>
@@ -257,39 +259,43 @@ public class GitStatusApp : IDisposable
         if (gitRoots == null || gitRoots.Length == 0) return;
 
         var table = new TableRenderer<TableColumn, GitRoot, object>();
-        table.Columns.Add(new TableColumn<GitRoot, object>() { Size = 6 } );
+        table.Columns.Add(new TableColumn<GitRoot, object>() { Title = "#" } );
+        table.Columns.Add(new TableColumn<GitRoot, object>() { Title = "Status", Size = 6 } );
         table.Columns.Add(new TableColumn<GitRoot, object>("Path", 30, 60));
         table.Columns.Add(new TableColumn<GitRoot, object>("Git", 30, 60));
+        int cc = 1;
         foreach(var item in Roots.OrderBy(x=>x.Path))
         {
             var path = ArgAbs ? item.Path : item.PathRelative;
-            var row = table.WriteRow(item.Status, path, item.StatusLine());
+            var row = table.WriteRow(cc, item.Status == ItemStatus.UpToDate ? "Ok" : item.Status.ToString(), path, item.StatusLine());
             row.RowData = item;
 
-            if (!consoleRegion.AllowOverflow && table.RowCount >= consoleRegion.Height - 2) break;
+            cc++;
         }
         table.CalcColumnSizes();
+        var sep = " │ ";
         foreach(var row in table.Rows)
         {
             if (row.RowData == null) throw new ArgumentNullException();
+            var data = row.RowData;
             foreach(var col in table.Columns)
             {
                 if (row.TryGetCell(col, out var cell))
                 {
                     if (col is IHeader<GitRoot, object> fullHeader)
                     {
-                        if (col.Index == 0)
+                        if (col.Title == "Status")
                         {
-                            consoleRegion.ForegroundColor = Colors[row.RowData.Status];
+                            consoleRegion.ForegroundColor = Colors[data.Status];
                         }
-                        if (col.Index == 2)
+                        if (col.Title == "Git")
                         {
-                            if ((int)row.RowData.Status > 3)
+                            if (data.Status != ItemStatus.UpToDate)
                             {
-                                consoleRegion.ForegroundColor = Colors[row.RowData.Status];
+                                consoleRegion.ForegroundColor = Colors[data.Status];
                             }
                         }
-                        consoleRegion.Write(fullHeader.RenderCellText(row.RowData, cell));
+                        consoleRegion.Write(fullHeader.RenderCellText(data, cell));
                         consoleRegion.Revert();
                     }
                     else
@@ -297,13 +303,19 @@ public class GitStatusApp : IDisposable
                         consoleRegion.Write(cell?.ToString() ?? "");
                     }
                 }
+                consoleRegion.Write(sep); // column sep
             }
             consoleRegion.WriteLine("");
         }
 
         // Status Line
         var donr = Roots.Count(x=>x.IsComplete);
-        consoleRegion.WriteLine($"[{spinner.Next()}] [{globalStatus,9}] Items {donr}/{Roots.Count} in {timer.Elapsed.TotalSeconds:0.0} sec");
+        consoleRegion.ForegroundColor = ConsoleColor.White;
+        consoleRegion.BackgroundColor = ConsoleColor.DarkBlue;
+        consoleRegion.WriteLine(
+                $"{globalStatus,9} [{spinner.Next()}] Items {donr}/{Roots.Count} in {timer.Elapsed.TotalSeconds:0.0} sec"
+                        .PadRight(table.Columns.Take(3).Sum(x=>x.Size ?? 10) + sep.Length*3)
+                );
     }
 
     public void Dispose()
