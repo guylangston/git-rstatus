@@ -77,11 +77,10 @@ public class DynamicConsoleRegion : IDisposable
         // Clear and Reset
         Console.SetCursorPosition(0, initialLine);
         Console.CursorVisible = false;
+        Revert();
 
         if (frame == 0 || SafeDraw)
         {
-            Console.ForegroundColor = StartFg;
-            Console.BackgroundColor = StartBg;
             var emptyLine = new String(' ', Width-1);
             for(int x=0; x<Height; x++)
             {
@@ -92,6 +91,13 @@ public class DynamicConsoleRegion : IDisposable
         FreeLines = Height;
         skipped = 0;
         frame++;
+    }
+
+    /// <summary>Revert to default colors</summary>
+    public void Revert()
+    {
+        Console.ForegroundColor = StartFg;
+        Console.BackgroundColor = StartBg;
     }
 
     public bool Write(string s)

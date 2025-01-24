@@ -1,31 +1,81 @@
-using System.Text;
-
 public interface IHeader
 {
     string? Title { get; }
     int? SizeMin { get; }
     int? SizeMax { get; }
+    int Index { get; set; }
+    int? Size { get; set; }
+    int? SizeContent { get; set; }
 }
-public class Header : IHeader
-{
-    public Header() { }
 
-    public Header(string? title, int? sizeMin = null, int? sizeMax = null)
+public interface IHeader<TRowData, TCell> : IHeader
+{
+    string RenderCellText(TRowData? row, TCell? cell);
+}
+
+public class TableColumn : IHeader
+{
+    public TableColumn() { }
+
+    public TableColumn(string? title, int? sizeMin, int? sizeMax)
     {
         Title = title;
         SizeMin = sizeMin;
         SizeMax = sizeMax;
     }
 
+    public int Index { get; set; }
     public string? Title { get; set; }
     public int? SizeMin { get; set; }
     public int? SizeMax { get; set; }
+    public int? Size { get; set;}
+    public int? SizeContent { get; set;}
 }
 
-public class TableRenderer<THeader, TCell> where THeader : IHeader, new()
+public class TableColumn<TRowData, TCell> : TableColumn, IHeader<TRowData, TCell>
 {
+    public TableColumn() { }
+    public TableColumn(string? title, int? sizeMin, int? sizeMax) : base(title, sizeMin, sizeMax) {}
+
+    public virtual string RenderCellText(TRowData? row, TCell? cellObj)
+    {
+        var cell = cellObj?.ToString() ?? "";
+        var size = Size ?? 500;
+        var cellTextClipped = (cell.Length <= size)
+            ? cell.PadRight(size)
+            : cell[0..size];
+        return cellTextClipped;
+    }
+}
+
+public class TableRow<TRowData, TCell> : List<TCell>
+{
+    public TRowData? RowData { get; set; }
+
+    public bool TryGetCell(IHeader col, out TCell? val)
+    {
+        if (col.Index < Count)
+        {
+            val = this[col.Index];
+            return true;
+        }
+        val = default(TCell);
+        return false;
+    }
+
+    public TableRow<TRowData, TCell> SetRowData(TRowData? data)
+    {
+        RowData = data;
+        return this;
+    }
+}
+
+public class TableRenderer<THeader,TRow, TCell> where THeader : IHeader, new()
+{
+    TableRow<TRow, TCell>? currentRow = null;
+
     public List<THeader> Columns { get; } = new();
-    public List<List<TCell>> Rows { get; } = new();
+    public List<TableRow<TRow, TCell>> Rows { get; } = new();
 
     public int RowCount => Rows.Count;
     public virtual int ColumnsCount => Rows.Count == 0 ? 0 : Rows.Max(x=>x.Count);
@@ -40,23 +90,32 @@ public class TableRenderer<THeader, TCell> where THeader : IHeader, new()
 
     public virtual void WriteCell(TCell obj)
     {
-        if (Rows.Count == 0) Rows.Add(new());
-        Rows.Last().Add(obj);
+        if (currentRow == null)
+        {
+            currentRow = new();
+            Rows.Add(currentRow);
+        }
+
+        currentRow.Add(obj);
+
     }
 
-    public void WriteRow()
+    public TableRow<TRow, TCell> WriteRow()
     {
-        Rows.Add(new());
+        if (currentRow == null) throw new InvalidOperationException();
+        var row = currentRow;
+        currentRow = null;
+        return row;
     }
 
-    public void WriteRow(params TCell[] row) => WriteRow(row.AsSpan());
-    public void WriteRow(ReadOnlySpan<TCell> row)
+    public TableRow<TRow, TCell> WriteRow(params TCell[] row) => WriteRow(row.AsSpan());
+    public TableRow<TRow, TCell> WriteRow(ReadOnlySpan<TCell> row)
     {
         foreach(var cell in row)
         {
             WriteCell(cell);
         }
-        WriteRow();
+        return WriteRow();
     }
 
     public IEnumerable<TCell?> GetColumnCells(int colIdx)
@@ -74,36 +133,60 @@ public class TableRenderer<THeader, TCell> where THeader : IHeader, new()
         }
     }
 
-    public virtual int[] GetColumnSizes()
+    public virtual void CalcColumnSizes()
     {
-        return Enumerable.Range(0, ColumnsCount)
-            .Select(colIdx=>
-                    {
-                        var max = 0;
-                        var header =  (colIdx < Columns.Count) ? Columns[colIdx] : (THeader?)default(THeader);
-                        if (header != null && header.SizeMin != null) max = header.SizeMin.Value;
-                        foreach(var cell in GetColumnCells(colIdx))
-                        {
-                            var len = cell?.ToString()?.Length ?? 0;
-                            if (len > max)
-                                max = len;
-                        }
-                        if (header != null && header.SizeMax != null)
-                        {
-                            if (max > header.SizeMax.Value) return header.SizeMax.Value;
-                        }
+        // Ensure Column definition
+        while(Columns.Count < ColumnsCount)
+        {
+            Columns.Add(new THeader());
+        }
+        for(var idx=0; idx<Columns.Count; idx++)
+        {
+            var col = Columns[idx];
+            col.Index = idx;
 
-                        return max;
-                    })
-            .ToArray();
+            var max = 0;
+            var header =  (idx < Columns.Count) ? Columns[idx] : (THeader?)default(THeader);
+            if (header != null && header.SizeMin != null) max = header.SizeMin.Value;
+            foreach(var cell in GetColumnCells(idx))
+            {
+                var len = cell?.ToString()?.Length ?? 0;
+                if (len > max)
+                    max = len;
+            }
+
+            col.SizeContent = max;
+            if (col.Size == null)
+            {
+                if (col.SizeMin != null && max < col.SizeMin.Value)
+                {
+                    col.Size = col.SizeMin.Value;
+                }
+                else if (col.SizeMax != null && max > col.SizeMax.Value)
+                {
+                    col.Size = col.SizeMax.Value;
+                }
+                else
+                {
+                    col.Size = max;
+                }
+            }
+        }
     }
 
+    public int[] GetColumnsSizes()
+    {
+        CalcColumnSizes();
+        return Columns.Select(x=>x.Size ?? 0).ToArray();
+    }
+
+    // May be obsolete?
     public virtual
         IEnumerable<IReadOnlyList<(THeader Header, string CellText)>>
         RenderCells()
     {
         List<(THeader, string)> line = new ();
-        var colSize = GetColumnSizes();
+        var colSize = GetColumnsSizes();
 
         // Ensure Column definition
         while(Columns.Count < ColumnsCount)

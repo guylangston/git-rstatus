@@ -255,23 +255,47 @@ public class GitStatusApp : IDisposable
 
         if (gitRoots == null || gitRoots.Length == 0) return;
 
-        var table = new TableRenderer<Header, object>();
-        table.Columns.Add(new Header("Status", 6));
-        table.Columns.Add(new Header("Path", 30, 60));
-        table.Columns.Add(new Header("Git", 30, 60));
+        var table = new TableRenderer<TableColumn, GitRoot, object>();
+        table.Columns.Add(new TableColumn<GitRoot, object>() { Size = 6 } );
+        table.Columns.Add(new TableColumn<GitRoot, object>("Path", 30, 60));
+        table.Columns.Add(new TableColumn<GitRoot, object>("Git", 30, 60));
         foreach(var item in Roots.OrderBy(x=>x.Path))
         {
             var path = ArgAbs ? item.Path : item.PathRelative;
-            var txtStatusLine =  item.StatusLine();
-            table.WriteRow(item.Status, path, item.StatusLine());
+            var row = table.WriteRow(item.Status, path, item.StatusLine());
+            row.RowData = item;
 
             if (!consoleRegion.AllowOverflow && table.RowCount >= consoleRegion.Height - 2) break;
         }
-        foreach(var row in table.RenderCells())
+        table.CalcColumnSizes();
+        foreach(var row in table.Rows)
         {
-            foreach(var cell in row)
+            if (row.RowData == null) throw new ArgumentNullException();
+            foreach(var col in table.Columns)
             {
-                consoleRegion.Write(cell.CellText);
+                if (row.TryGetCell(col, out var cell))
+                {
+                    if (col is IHeader<GitRoot, object> fullHeader)
+                    {
+                        if (col.Index == 0)
+                        {
+                            consoleRegion.ForegroundColor = Colors[row.RowData.Status];
+                        }
+                        if (col.Index == 2)
+                        {
+                            if ((int)row.RowData.Status >= 3)
+                            {
+                                consoleRegion.ForegroundColor = Colors[row.RowData.Status];
+                            }
+                        }
+                        consoleRegion.Write(fullHeader.RenderCellText(row.RowData, cell));
+                        consoleRegion.Revert();
+                    }
+                    else
+                    {
+                        consoleRegion.Write(cell?.ToString() ?? "");
+                    }
+                }
             }
             consoleRegion.WriteLine("");
         }

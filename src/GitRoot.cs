@@ -7,6 +7,7 @@ public enum ItemStatus
     Clean,
     Dirty,
     Behind,
+    Ahead, // TODO
     Pull,
 }
 
