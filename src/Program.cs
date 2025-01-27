@@ -9,6 +9,10 @@ public static class Program
         using var traceListener= new TextWriterTraceListener(logFilePath);
         Trace.Listeners.Add(traceListener);
 #endif
+        if (args.Contains("--bench"))
+        {
+            return Benchmark.Run(args);
+        }
 
         using var app = new GitStatusApp(args);
         return app.Run();
