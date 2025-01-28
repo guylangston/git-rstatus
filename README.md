@@ -45,7 +45,7 @@
 
 ```bash
 git-status: Fast recursive git status (with fetch and pull)
-   version: 0.3.0
+   version: 0.3.2
 
 git-status -switch --param path1 path2 path3
     --no-fetch-all              # dont `git fetch` before `git status`
