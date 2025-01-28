@@ -13,6 +13,7 @@ public class DynamicConsoleRegion : IDisposable
     public int MinHeight { get; init; } = 3;
     public int FreeLines { get; private set; }
     public int Width => Console.WindowWidth;
+
     public bool AllowOverflow { get; set; } = false;
 
     /// <summary>Safe will clear the screen before drawing</summary>
@@ -95,14 +96,14 @@ public class DynamicConsoleRegion : IDisposable
     }
 
     /// <summary>Clear the region; set cursor to start; track freelines</summary>
-    public void StartDraw()
+    public void StartDraw(bool clear)
     {
         // Clear and Reset
         Console.SetCursorPosition(0, initialCursorLine);
         Console.CursorVisible = false;
         Revert();
 
-        if (frame == 0 || ModeSafeDraw)
+        if (frame == 0 || clear)
         {
             var emptyLine = new String(' ', Width-1);
             for(int x=0; x<Height; x++)

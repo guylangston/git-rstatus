@@ -71,7 +71,7 @@ public class GitRoot
 
     public DateTime Started { get; private set; }
 
-    private async Task<ProcessResult> RunYielding(string cmd, string args)
+    private async Task<ProcessResult> RunYielding(string cmd, string args, bool checkStdOut = true)
     {
         var res = await ProcessRunner.RunYieldingProcessResult(cmd, args, Path, 50, TimeSpan.FromSeconds(30));
         logger.Log($"CMD: {cmd} {args} ==> ExitCode:{res.ExitCode} in {res.Duration} [std: {res.StdOut.Count}, err: {res.StdErr.Count}]");
@@ -86,6 +86,10 @@ public class GitRoot
         foreach(var lin in res.StdOut)
         {
             logger.Log(lin);
+        }
+        if (checkStdOut && res.ExitCode == 0 && res.StdOut.Count == 0)
+        {
+            logger.Log("WARN: No error (ExitCode=0), but no std out. {cmd} {arg}");
         }
 
         return res;
@@ -108,7 +112,7 @@ public class GitRoot
 
     public async Task GitFetch()
     {
-        gitFetch = await RunYielding("git", "fetch");
+        gitFetch = await RunYielding("git", "fetch", false);
         gitFetch.ThrowOnBadExitCode(nameof(gitFetch)); // check after assignement so we still record erros
     }
 

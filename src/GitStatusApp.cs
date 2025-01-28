@@ -6,7 +6,7 @@ public class GitStatusApp : IDisposable
 {
     DynamicConsoleRegionWithLogger consoleRegion = new()
     {
-        ModeSafeDraw = false,
+        ModeSafeDraw = true, // still overflows on smaller windows
         Logger = Program.LoggerFactory.GetLogger<DynamicConsoleRegion>(),
     };
     Stopwatch timer = new();
@@ -272,12 +272,11 @@ public class GitStatusApp : IDisposable
     /// - If there is no space. Show progress, then output results
     private void Render()
     {
-        consoleRegion.StartDraw();
+        consoleRegion.StartDraw(false);
 
         if (gitRoots == null || gitRoots.Length == 0) return;
 
         var table = new TableRenderer<TableColumn, GitRoot, object>();
-        table.Columns.Add(new TableColumn<GitRoot, object>() { Title = "#" } );
         table.Columns.Add(new TableColumn<GitRoot, object>() { Title = "Status", Size = 6 } );
         table.Columns.Add(new TableColumn<GitRoot, object>("Path", 30, 60));
         table.Columns.Add(new TableColumn<GitRoot, object>("Git", 30, 60));
@@ -285,13 +284,13 @@ public class GitStatusApp : IDisposable
         foreach(var item in Roots.OrderBy(x=>x.Path))
         {
             var path = ArgAbs ? item.Path : item.PathRelative;
-            var row = table.WriteRow(cc, item.Status == ItemStatus.UpToDate ? "Ok" : item.Status.ToString(), path, item.StatusLine());
+            var row = table.WriteRow(item.Status == ItemStatus.UpToDate ? "Ok" : item.Status.ToString(), path, item.StatusLine());
             row.RowData = item;
 
             cc++;
         }
         table.CalcColumnSizes();
-        var sep = " │ ";
+        var sep = " ";
         var take = consoleRegion.AllowOverflow
             ? table.Rows.Count
             : consoleRegion.Height-1;
@@ -324,21 +323,28 @@ public class GitStatusApp : IDisposable
                         consoleRegion.Write(cell?.ToString() ?? "");
                     }
                 }
-                if (col.Index < 3) consoleRegion.Write(sep); // column sep
+                if (col.Index < table.Columns.Count) consoleRegion.Write(sep); // column sep
             }
             consoleRegion.WriteLine("");
         }
 
         // Status Line
         var donr = Roots.Count(x=>x.IsComplete);
-        consoleRegion.ForegroundColor = ConsoleColor.White;
-        consoleRegion.BackgroundColor = ConsoleColor.DarkBlue;
-        consoleRegion.Write(
-                $" >> {globalStatus,9} [{spinner.Next()}] Items {donr}/{Roots.Count} in {timer.Elapsed.TotalSeconds:0.0} sec"
-                        /* .PadRight(table.Columns.Sum(x=>x.Size ?? 10) + (sep.Length*table.Columns.Count-1)) */
-                );
-        consoleRegion.Revert();
-        consoleRegion.Write("...");
+        if (!consoleRegion.AllowOverflow)
+        {
+            consoleRegion.ForegroundColor = ConsoleColor.Black;
+            consoleRegion.BackgroundColor = ConsoleColor.DarkGray;
+            consoleRegion.Write(
+                    $" >> {globalStatus,9} [{spinner.Next()}] Items {donr}/{Roots.Count} in {timer.Elapsed.TotalSeconds:0.0} sec <<"
+                    );
+            consoleRegion.Revert();
+        }
+        else
+        {
+            consoleRegion.Write(
+                    $"{globalStatus,9} Items {donr}/{Roots.Count} in {timer.Elapsed.TotalSeconds:0.0} sec                "
+                    );
+        }
     }
 
     public void Dispose()

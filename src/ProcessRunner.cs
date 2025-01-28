@@ -44,49 +44,60 @@ public static class ProcessRunner
                UseShellExecute        = false,
             }
         };
-        proc.OutputDataReceived += (o, e) =>
-        {
-            if (e.Data != null) stdOut.Add(e.Data);
-        };
-        proc.ErrorDataReceived += (o, e) =>
-        {
-            if (e.Data != null) stdErr.Add(e.Data);
-        };
-        proc.EnableRaisingEvents = true;
         timer.Start();
         var start = DateTime.Now;
         proc.Start();
-        proc.BeginOutputReadLine();
-        proc.BeginErrorReadLine();
-
-        if (timeout != null)
+        async Task ReadStdOut()
         {
-            proc.WaitForExit(timeout.Value);
-            if (!proc.HasExited)
+            while(await proc.StandardOutput.ReadLineAsync() is {} line)
             {
-                proc.Kill();
-                timer.Stop();
-                return new ProcessResult
-                {
-                    ExitCode = -99,
-                    Command = prog,
-                    CommandArgs = args,
-                    StdOut = stdOut,
-                    StdErr = stdErr,
-                    Started = start,
-                    Duration = timer.Elapsed,
-                    TimeOutBeforeComplete = true
-                };
+                stdOut.Add(line);
             }
         }
-        else
+        async Task ReadStdError()
         {
-            await proc.WaitForExitAsync();
+            while(await proc.StandardError.ReadLineAsync() is {} line)
+            {
+                stdErr.Add(line);
+            }
         }
+        var t1 = Task.Factory.StartNew(ReadStdOut, TaskCreationOptions.LongRunning);
+        var t2 = Task.Factory.StartNew(ReadStdError, TaskCreationOptions.LongRunning);
+        var t3 = proc.WaitForExitAsync();
+
+        await Task.WhenAll(t1, t2, t3);
+
+        /* if (timeout != null) */
+        /* { */
+        /*     proc.WaitForExit(timeout.Value); */
+        /*     if (!proc.HasExited) */
+        /*     { */
+        /*         proc.Kill(); */
+        /*         timer.Stop(); */
+        /*         return new ProcessResult */
+        /*         { */
+        /*             ExitCode = -99, */
+        /*             Command = prog, */
+        /*             CommandArgs = args, */
+        /*             StdOut = stdOut, */
+        /*             StdErr = stdErr, */
+        /*             Started = start, */
+        /*             Duration = timer.Elapsed, */
+        /*             TimeOutBeforeComplete = true */
+        /*         }; */
+        /*     } */
+        /* } */
+        /* else */
+        /* { */
+        /*     await proc.WaitForExitAsync(); */
+        /* } */
         timer.Stop();
+        var exitCode = proc.ExitCode;
+        proc.Close();
+
         return new ProcessResult
         {
-            ExitCode = proc.ExitCode,
+            ExitCode = exitCode,
             StdOut = stdOut,
             StdErr = stdErr,
             Command = prog,

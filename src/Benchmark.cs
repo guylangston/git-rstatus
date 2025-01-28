@@ -11,9 +11,9 @@ public static class Benchmark
         var cc = 0;
         ConsoleColor[] clrs = [ConsoleColor.DarkBlue, ConsoleColor.DarkCyan, ConsoleColor.DarkGray, ConsoleColor.Cyan, ConsoleColor.Yellow,
                                ConsoleColor.Magenta, ConsoleColor.DarkMagenta, ConsoleColor.DarkRed, ConsoleColor.Red, ConsoleColor.White];
-        for(cc=0; cc<500; cc++)
+        for(cc=0; cc<4*60; cc++)
         {
-            console.StartDraw();
+            console.StartDraw(false);
             do
             {
                 foreach(var c in clrs)
