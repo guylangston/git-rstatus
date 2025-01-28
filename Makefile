@@ -8,6 +8,9 @@ publish: build
 	@echo 'TODO: update README.md with "git-status --help"'
 	@[ -d ~/apps ] && cp ./dist/git-status ~/apps/ || echo "NotFound: ~/apps"
 
+publish-win: build
+	@dotnet publish -c Release --sc -r win-x64 -p:PublishTrimmed=true -p:PublishSingleFile=true -o ../dist/
+
 run: build
 	cd ./src; dotnet run
 
