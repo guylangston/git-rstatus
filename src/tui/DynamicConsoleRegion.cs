@@ -1,3 +1,8 @@
+public class DynamicConsoleRegionWithLogger : DynamicConsoleRegion
+{
+    public ILogger? Logger { get; set; }
+}
+
 public class DynamicConsoleRegion : IDisposable
 {
     int initialCursorLine;
@@ -9,10 +14,9 @@ public class DynamicConsoleRegion : IDisposable
     public int FreeLines { get; private set; }
     public int Width => Console.WindowWidth;
     public bool AllowOverflow { get; set; } = false;
-    public ILogger? Logger { get; set; } = null;
 
     /// <summary>Safe will clear the screen before drawing</summary>
-    public bool SafeDraw { get; set; } = true;
+    public bool ModeSafeDraw { get; set; } = true;
 
     public ConsoleColor StartFg { get; private set; }
     public ConsoleColor StartBg { get; private set; }
@@ -29,6 +33,11 @@ public class DynamicConsoleRegion : IDisposable
 
     /// <summary>Number of lines assigned to region</summary>
     public int Height { get; private set; }
+
+    public override string ToString()
+    {
+        return $"{nameof(DynamicConsoleRegion)}: Height:{Height}{(ModeSafeDraw ? " +safe": "")}{( AllowOverflow ? " +overflow" : "" )}";
+    }
 
     /// <summary>Prepare state. Capture initial cursor size</summary>
     public void Init(int requestedHeight)
@@ -53,8 +62,6 @@ public class DynamicConsoleRegion : IDisposable
         // Q: How much size can be assigned?
         if (availableLines >= newSize)
         {
-            Logger?.Log($"ReInit({newSize}) IntialCursor:{initialCursorLine} CursorTop:{Console.CursorTop}, WindowHeight:{Console.WindowHeight}");
-            Logger?.Log($"  -> No Resize");
             RequestedHeight = newSize;
             FreeLines = Height = newSize;
         }
@@ -63,7 +70,6 @@ public class DynamicConsoleRegion : IDisposable
             RequestedHeight = newSize;
             Console.CursorTop = initialCursorLine;
             availableLines = 0;
-            Logger?.Log($"ReInit({newSize}) IntialCursor:{initialCursorLine} CursorTop:{Console.CursorTop}, WindowHeight:{Console.WindowHeight}");
             while(availableLines <= newSize && initialCursorLine > 0)
             {
                 var lastLine = Console.WindowHeight-1;
@@ -73,7 +79,6 @@ public class DynamicConsoleRegion : IDisposable
                 {
                     Console.WriteLine();
                     availableLines++;
-                    Logger?.Log($"  -> WriteLine()::NoScroll");
                 }
                 else
                 {
@@ -82,12 +87,9 @@ public class DynamicConsoleRegion : IDisposable
                     // Did adding the new line cause the windows to scroll up?
                     // Yes - if the cursor is on the last line
                     initialCursorLine--;
-                    Logger?.Log($"  -> WriteLine()::ScrollOne - initialCursorLine:{initialCursorLine}");
                 }
-                Logger?.Log($"  -> IntialCursor:{initialCursorLine} CursorTop:{Console.CursorTop}, WindowHeight:{Console.WindowHeight}, availableLines:{availableLines}");
             }
             Console.CursorTop = initialCursorLine;
-            Logger?.Log($"ReInit({newSize}) DONE: IntialCursor:{initialCursorLine} CursorTop:{Console.CursorTop}, WindowHeight:{Console.WindowHeight}, avail:{availableLines}");
             FreeLines = Height = availableLines;
         }
     }
@@ -100,7 +102,7 @@ public class DynamicConsoleRegion : IDisposable
         Console.CursorVisible = false;
         Revert();
 
-        if (frame == 0 || SafeDraw)
+        if (frame == 0 || ModeSafeDraw)
         {
             var emptyLine = new String(' ', Width-1);
             for(int x=0; x<Height; x++)
@@ -125,7 +127,14 @@ public class DynamicConsoleRegion : IDisposable
     {
         if (FreeLines < 1 && !AllowOverflow) return false;
 
+        if (!ModeSafeDraw)
+        {
+            Console.Write(s);
+            return true;
+        }
+
         // Don't allow wrapping
+        // WARN: This is slow!
         var remaining = Console.WindowWidth - Console.CursorLeft;
         if (s.Length >= remaining)
         {
@@ -147,6 +156,7 @@ public class DynamicConsoleRegion : IDisposable
         }
     }
 
+    public bool WriteLine() => WriteLine("");
     public bool WriteLine(string s, bool finish = false)
     {
         if (AllowOverflow || FreeLines > 0)

@@ -4,9 +4,9 @@ using System.Text;
 
 public class GitStatusApp : IDisposable
 {
-    DynamicConsoleRegion consoleRegion = new()
+    DynamicConsoleRegionWithLogger consoleRegion = new()
     {
-        SafeDraw = false,
+        ModeSafeDraw = false,
         Logger = Program.LoggerFactory.GetLogger<DynamicConsoleRegion>(),
     };
     Stopwatch timer = new();
@@ -324,7 +324,7 @@ public class GitStatusApp : IDisposable
                         consoleRegion.Write(cell?.ToString() ?? "");
                     }
                 }
-                consoleRegion.Write(sep); // column sep
+                if (col.Index < 3) consoleRegion.Write(sep); // column sep
             }
             consoleRegion.WriteLine("");
         }
