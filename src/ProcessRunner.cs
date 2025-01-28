@@ -61,36 +61,37 @@ public static class ProcessRunner
                 stdErr.Add(line);
             }
         }
-        var t1 = Task.Factory.StartNew(ReadStdOut, TaskCreationOptions.LongRunning);
-        var t2 = Task.Factory.StartNew(ReadStdError, TaskCreationOptions.LongRunning);
-        var t3 = proc.WaitForExitAsync();
+
+        var tokenSource = timeout != null
+            ? new CancellationTokenSource(timeout.Value)
+            : new CancellationTokenSource();
+        var scheduler = TaskScheduler.Default;
+        var t1 = Task.Factory.StartNew(ReadStdOut, tokenSource.Token, TaskCreationOptions.LongRunning, scheduler);
+        var t2 = Task.Factory.StartNew(ReadStdError, tokenSource.Token, TaskCreationOptions.LongRunning, scheduler);
+        var t3 =  proc.WaitForExitAsync(tokenSource.Token);
 
         await Task.WhenAll(t1, t2, t3);
 
-        /* if (timeout != null) */
-        /* { */
-        /*     proc.WaitForExit(timeout.Value); */
-        /*     if (!proc.HasExited) */
-        /*     { */
-        /*         proc.Kill(); */
-        /*         timer.Stop(); */
-        /*         return new ProcessResult */
-        /*         { */
-        /*             ExitCode = -99, */
-        /*             Command = prog, */
-        /*             CommandArgs = args, */
-        /*             StdOut = stdOut, */
-        /*             StdErr = stdErr, */
-        /*             Started = start, */
-        /*             Duration = timer.Elapsed, */
-        /*             TimeOutBeforeComplete = true */
-        /*         }; */
-        /*     } */
-        /* } */
-        /* else */
-        /* { */
-        /*     await proc.WaitForExitAsync(); */
-        /* } */
+        if (tokenSource.IsCancellationRequested)
+        {
+            if (!proc.HasExited)
+            {
+                proc.Kill();
+                timer.Stop();
+                return new ProcessResult
+                {
+                    ExitCode = -99,
+                     Command = prog,
+                     CommandArgs = args,
+                     StdOut = stdOut,
+                     StdErr = stdErr,
+                     Started = start,
+                     Duration = timer.Elapsed,
+                     TimeOutBeforeComplete = true
+                };
+            }
+        }
+
         timer.Stop();
         var exitCode = proc.ExitCode;
         proc.Close();

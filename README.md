@@ -36,7 +36,7 @@
 ## Project Tasks
 - Manual Publish
     - [x] Publish linux release on GitHub
-    - [ ] Publish windows release on GitHub
+    - [x] Publish windows release on GitHub
     - [ ] Publish to arch `AUR`
     - [ ] Publish to windows `scoop` package manager
 - Automatic Publish process
