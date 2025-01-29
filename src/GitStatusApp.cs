@@ -77,7 +77,9 @@ public class GitStatusApp : IDisposable
     public int          ArgThreadCount { get; } = 8;
     public bool         ArgPull => ArgAllFlags.Contains('p') || ArgAllParams.Contains("--pull");
     public bool         ArgHelp => ArgAllFlags.Contains('?') ||  ArgAllFlags.Contains('h') || ArgAllParams.Contains("--help");
+    public bool         ArgVersion => ArgAllFlags.Contains('v') || ArgAllParams.Contains("--version");
     public bool         ArgAbs  => ArgAllFlags.Contains('a') || ArgAllParams.Contains("--abs");
+    public bool         ArgScanOnly  => ArgAllFlags.Contains('s') || ArgAllParams.Contains("--scan-only");
 
     public IReadOnlyList<GitRoot> Roots => gitRoots ?? throw new NullReferenceException("gitRoots. Scan expected first");
 
@@ -96,6 +98,20 @@ public class GitStatusApp : IDisposable
         if (ArgHelp)
         {
             DisplayHelp();
+            return 0;
+        }
+        if (ArgVersion)
+        {
+            Console.WriteLine(GetVersion() ?? "dev");
+            return 0;
+        }
+        if (ArgScanOnly)
+        {
+            ScanForGitFolders().Wait();
+            foreach(var dir in gitRoots!.OrderBy(x=>x.Path))
+            {
+                Console.WriteLine(dir.Path);
+            }
             return 0;
         }
 
@@ -173,43 +189,18 @@ public class GitStatusApp : IDisposable
     {
         try
         {
-            logger.Log("IN: "+nameof(ScanAndQueryAllRoots));
+            logger.Log("IN: " + nameof(ScanAndQueryAllRoots));
             globalStatus = "Scanning";
-            var scanResult = new ConcurrentBag<GitRoot>();
-            await Parallel.ForEachAsync(ArgPath, async (path, ct) =>
-            {
-                var comp = new GitFolderScanner()
-                {
-                    Exclude = (path)=>
-                    {
-                        foreach(var ex in ArgExclude)
-                        {
-                            if (path.EndsWith(ex))
-                            {
-                                logger.Log($"Excluding: {path} (because {ex})");
-                                return true;
-                            }
-                        }
-                        return false;
-                    }
-                };
-                await comp.Scan(path, ArgMaxDepth);
-                foreach(var r in comp.Roots)
-                {
-                    scanResult.Add(r);
-                }
-            });
-            gitRoots = scanResult.ToArray();
-            scanComplete = true;
+            await ScanForGitFolders();
 
             globalStatus = "Processing";
             var buckets = GeneralHelper.CollectInBuckets(Roots, Roots.Count / ArgThreadCount).ToArray();
-            var cc=0;
-            foreach(var b in buckets)
+            var cc = 0;
+            foreach (var b in buckets)
             {
-                logger.Log($"Bucket[{cc}] ({string.Join(',', b.Select(x=>x.Path))}");
+                logger.Log($"Bucket[{cc}] ({string.Join(',', b.Select(x => x.Path))}");
             }
-            await Parallel.ForEachAsync(buckets, (async (x, cts)=>await ProcessBucket(this, x)));
+            await Parallel.ForEachAsync(buckets, (async (x, cts) => await ProcessBucket(this, x)));
 
             globalStatus = "Completed";
         }
@@ -232,16 +223,47 @@ public class GitStatusApp : IDisposable
         }
     }
 
+    private async Task ScanForGitFolders()
+    {
+        var scanResult = new ConcurrentBag<GitRoot>();
+        await Parallel.ForEachAsync(ArgPath, async (path, ct) =>
+        {
+            var comp = new GitFolderScanner()
+            {
+                Exclude = (path) =>
+                {
+                    foreach (var ex in ArgExclude)
+                    {
+                        if (path.EndsWith(ex))
+                        {
+                            logger.Log($"Excluding: {path} (because {ex})");
+                            return true;
+                        }
+                    }
+                    return false;
+                }
+            };
+            await comp.Scan(path, ArgMaxDepth);
+            foreach (var r in comp.Roots)
+            {
+                scanResult.Add(r);
+            }
+        });
+        gitRoots = scanResult.ToArray();
+        scanComplete = true;
+    }
 
     string? GetVersion() => System.Reflection.Assembly.GetExecutingAssembly().GetName().Version?.ToString()[..^2];
     string GetProjectDescription() => "Fast recursive git status (with fetch and pull)";
+    string GetProjectUrl() => "https://github.com/guylangston/git-status";
 
     public void DisplayHelp()
     {
         Console.WriteLine(
         $"""
         git-status: {GetProjectDescription()}
-           version: {GetVersion()}
+           version: {GetVersion() ?? "dev"}
+           project: {GetProjectUrl()}
 
         git-status -switch --param path1 path2 path3
             --no-fetch-all              # dont `git fetch` before `git status`
@@ -251,6 +273,10 @@ public class GitStatusApp : IDisposable
             --depth number              # don't recurse deeper than `number`
             --log                       # create log file (in $PWD)
             -a --abs                    # use absolute paths
+            -v --version                # version information
+            -s --scan-only              # just scan for all git folders and display
+
+        (*) switched can be combined, for example -ap will pull and abs paths
         """);
     }
 
