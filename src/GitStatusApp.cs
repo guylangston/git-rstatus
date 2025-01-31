@@ -276,7 +276,7 @@ public class GitStatusApp : IDisposable
             -v --version                # version information
             -s --scan-only              # just scan for all git folders and display
 
-        (*) switched can be combined, for example -ap will pull and abs paths
+        (*) -switch (single char) can be combined, for example -ap will pull and abs paths
         """);
     }
 
