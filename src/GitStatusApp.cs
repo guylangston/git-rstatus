@@ -305,12 +305,23 @@ public class GitStatusApp : IDisposable
         var table = new TableRenderer<TableColumn, GitRoot, object>();
         table.Columns.Add(new TableColumn<GitRoot, object>() { Title = "Status", Size = 6 } );
         table.Columns.Add(new TableColumn<GitRoot, object>("Path", 30, 60));
+        table.Columns.Add(new TableColumn<GitRoot, object>("Branch", 10, 30));
         table.Columns.Add(new TableColumn<GitRoot, object>("Git", 30, 60));
         int cc = 1;
         foreach(var item in Roots.OrderBy(x=>x.Path))
         {
             var path = ArgAbs ? item.Path : item.PathRelative;
-            var row = table.WriteRow(item.Status == ItemStatus.UpToDate ? "Ok" : item.Status.ToString(), path, item.StatusLine());
+            string? branch = null;
+            if (item.Branch != "main" && item.Branch != "master")
+            {
+                branch = item.Branch;
+            }
+            var branchCol = $"{branch} {item.BranchStatus}";
+            var row = table.WriteRow(
+                    item.Status == ItemStatus.UpToDate ? "Ok" : item.Status.ToString(),
+                    path,
+                    branchCol,
+                    item.StatusLine());
             row.RowData = item;
 
             cc++;
@@ -334,7 +345,11 @@ public class GitStatusApp : IDisposable
                         {
                             consoleRegion.ForegroundColor = Colors[data.Status];
                         }
-                        if (col.Title == "Git")
+                        else if (col.Title == "Branch")
+                        {
+                            consoleRegion.ForegroundColor = ConsoleColor.Magenta;
+                        }
+                        else if (col.Title == "Git")
                         {
                             if (data.Status != ItemStatus.UpToDate)
                             {

@@ -59,12 +59,14 @@ public class GitRoot
         logger = Program.LoggerFactory.GetLogger(nameof(GitRoot) + ":" + relPath);
     }
 
-    public string Path { get; }
-    public string PathRelative { get; }
-    public ItemStatus Status { get; set; } = ItemStatus.Found;
-    public RunStatus StatusRunning { get; set; } = RunStatus.Pending;
-    public Exception? Error { get; private set; }
-    public TimeSpan Duration { get; private set; }
+    public string     Path          { get; }
+    public string     PathRelative  { get; }
+    public ItemStatus Status        { get; set;    }    = ItemStatus.Found;
+    public RunStatus  StatusRunning { get; set;    }    = RunStatus.Pending;
+    public string?    Branch        { get; set;    }
+    public string?    BranchStatus  { get; set;    }
+    public Exception? Error         { get; private set; }
+    public TimeSpan   Duration      { get; private set; }
 
     public bool IsComplete => StatusRunning == RunStatus.Complete || StatusRunning == RunStatus.Error;
     public string? LogFirstLine => gitLog?.StdOut.FirstOrDefault();
@@ -108,6 +110,24 @@ public class GitRoot
     {
         gitStatus = await RunYielding("git", "status -bs");
         gitStatus.ThrowOnBadExitCode(nameof(gitStatus)); // check after assignement so we still record erros
+        if (gitStatus.StdOut.Count > 0)
+        {
+            // Expect: "## main...origin/main [behind 1]"
+            var l1 = gitStatus.StdOut.First();
+            var until = l1.IndexOf("...");
+            if (until > 0)
+            {
+                Branch = l1[3..until];
+            }
+
+            var b1 = l1.IndexOf('[');
+            var b2 = l1.IndexOf(']');
+            if (b1 > 0 && b2 > b1)
+            {
+                var aheadBehind = l1[(b1+1)..b2].Replace("behind ", "-").Replace("ahead ", "+");
+                BranchStatus = aheadBehind;
+            }
+        }
     }
 
     public async Task GitFetch()
