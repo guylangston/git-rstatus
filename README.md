@@ -2,6 +2,9 @@
 
 > Fast recursive scan for all git repos. Async `git fetch && git status`
 
+`git-status` is a quality-of-life tool to quickly see that status of numerous
+project. It is a small/simple help unlike the larger fully-feature `lazygit`.
+
 ![Screenshot](./doc/screenshot-0.3.0.jpeg)
 
 ## Feature List - CLI
@@ -25,13 +28,23 @@
 - [x] `--help` text and man-style doc file
 - [ ] Support shell command completion
 
-## Wish List (not current plan for implementation)
+## Feature List - TUI
 
-- User interaction - TUI
-    - Move Up/Down, Scroll Up/Down
-    - Sidebar-style flyout with more information
-    - Select a git repo and open in Explorer or terminal
-- Logger: write all `git` output to a file
+> TUI not yet implemented (WIP)
+
+- [ ] Scrollable (Up, Down, PgUp, PgDown, Home, End)
+- [ ] Seachable `fzf` algo lib?
+- [ ] Flyout details
+- [ ] Pull on demand
+- [ ] Jump - shell integration jump to folder
+- [ ] Jump to remote GitHub / GitLab
+- [ ] Open - Open folder in app (`vscode`, `vim`, `rider`, etc)
+
+## Roadmap
+
+1. Get CLI stable and clean
+2. CLI integration with `fzf`
+3. TUI version for added Quality-Of-Life features
 
 ## Project Tasks
 - Manual Publish
