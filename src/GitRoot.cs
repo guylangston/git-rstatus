@@ -1,6 +1,6 @@
 using System.Diagnostics;
 
-public enum ItemStatus
+public enum GitStatus
 {
     None,
     Found,
@@ -32,16 +32,10 @@ public static class ProcessResultHelper
     }
 }
 
-public class RecoverableException : Exception
-{
-    public RecoverableException()
-    {
-    }
-
-    public RecoverableException(string? message) : base(message)
-    {
-    }
-}
+public record GitRootSummary(
+        string Path, GitStatus Status,
+        int Behind, int Ahead, int NewFiles,
+        string SummaryOneLine) {}
 
 public class GitRoot
 {
@@ -61,7 +55,7 @@ public class GitRoot
 
     public string     Path          { get; }
     public string     PathRelative  { get; }
-    public ItemStatus Status        { get; set;    }    = ItemStatus.Found;
+    public GitStatus  Status        { get; set;    }    = global::GitStatus.Found;
     public RunStatus  StatusRunning { get; set;    }    = RunStatus.Pending;
     public string?    Branch        { get; set;    }
     public string?    BranchStatus  { get; set;    }
@@ -72,6 +66,9 @@ public class GitRoot
     public string? LogFirstLine => gitLog?.StdOut.FirstOrDefault();
 
     public DateTime Started { get; private set; }
+
+    public GitRootSummary ToSummary()
+        => new GitRootSummary(Path, Status, 0, 0, 0, StatusLine());
 
     private async Task<ProcessResult> RunYielding(string cmd, string args, bool checkStdOut = true)
     {
@@ -156,7 +153,7 @@ public class GitRoot
 
     public string StatusLine()
     {
-        if (Status == ItemStatus.Error)
+        if (Status == global::GitStatus.Error)
         {
             foreach(var proc in GetProcessResults())
             {
@@ -168,8 +165,8 @@ public class GitRoot
             return "Unknown error";
         }
         if (StatusRunning == RunStatus.Error) return $"<ERROR> {Error?.Message}";
-        if (Status == ItemStatus.Found) return "";
-        if (Status == ItemStatus.Ignore)
+        if (Status == global::GitStatus.Found) return "";
+        if (Status == global::GitStatus.Ignore)
         {
             if (gitLog != null)
             {
@@ -183,16 +180,16 @@ public class GitRoot
         }
         if (gitStatus != null)
         {
-            if (Status == ItemStatus.Behind) return gitStatus.FirstLineOrError();
-            if (Status == ItemStatus.Ahead) return gitStatus.FirstLineOrError();
-            if (Status == ItemStatus.Dirty && gitStatus.StdOut.Count > 1)
+            if (Status == global::GitStatus.Behind) return gitStatus.FirstLineOrError();
+            if (Status == global::GitStatus.Ahead) return gitStatus.FirstLineOrError();
+            if (Status == global::GitStatus.Dirty && gitStatus.StdOut.Count > 1)
             {
                 return $"[{gitStatus.StdOut.Count-1} files] {gitStatus.StdOut[1]}";
 
             }
         }
-        if (Status == ItemStatus.Check) return "";
-        if (Status == ItemStatus.UpToDate)
+        if (Status == global::GitStatus.Check) return "";
+        if (Status == global::GitStatus.UpToDate)
         {
             if (gitLog != null)
             {
@@ -212,7 +209,7 @@ public class GitRoot
             }
             return "";
         }
-        if (Status == ItemStatus.Pull)
+        if (Status == global::GitStatus.Pull)
         {
             if (gitPull != null)
             {
@@ -230,13 +227,13 @@ public class GitRoot
         {
             timer.Start();
             StatusRunning = RunStatus.Running;
-            if (Status == ItemStatus.Ignore)
+            if (Status == global::GitStatus.Ignore)
             {
                 StatusRunning = RunStatus.Complete;
                 return;
             }
 
-            Status = ItemStatus.Check;
+            Status = global::GitStatus.Check;
             if (app.ArgRemote) await GitRemote();
             var fetch = app.ShouldFetch(this);
             if (fetch)
@@ -250,10 +247,10 @@ public class GitRoot
                 var lineOne = gitStatus.FirstLineOrError();
                 if (lineOne.Contains("[behind "))
                 {
-                    Status = ItemStatus.Behind;
+                    Status = global::GitStatus.Behind;
                     if (app.ArgPull)
                     {
-                        Status = ItemStatus.Pull;
+                        Status = global::GitStatus.Pull;
                         await GitPull();
                         return;
                     }
@@ -261,7 +258,7 @@ public class GitRoot
                 }
                 else if (lineOne.Contains("[ahead "))
                 {
-                    Status = ItemStatus.Ahead;
+                    Status = global::GitStatus.Ahead;
                     return;
                 }
                 else
@@ -269,30 +266,30 @@ public class GitRoot
                     await GitLog();
                     if (fetch)
                     {
-                        Status = ItemStatus.UpToDate;
+                        Status = global::GitStatus.UpToDate;
                         return;
                     }
                     else
                     {
                         // did not fetch, do not sure if we are up to date
-                        Status = ItemStatus.Ignore;
+                        Status = global::GitStatus.Ignore;
                         return;
                     }
                 }
             }
             else
             {
-                Status = ItemStatus.Dirty;
+                Status = global::GitStatus.Dirty;
             }
         }
         catch(RecoverableException)
         {
-            Status = ItemStatus.Error;
+            Status = global::GitStatus.Error;
             StatusRunning = RunStatus.Error;
         }
         catch(Exception ex)
         {
-            Status = ItemStatus.Error;
+            Status = global::GitStatus.Error;
             StatusRunning = RunStatus.Error;
             Error = ex;
         }

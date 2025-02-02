@@ -1,0 +1,138 @@
+[
+  {
+    "Path": "/home/guy/repo/EulerProject",
+    "Status": 4,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "(4 months ago) holiday progress"
+  },
+  {
+    "Path": "/home/guy/repo/pbp",
+    "Status": 4,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "(6 days ago) fix: bad security check"
+  },
+  {
+    "Path": "/home/guy/repo/learning",
+    "Status": 4,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "(3 weeks ago) bash LSP"
+  },
+  {
+    "Path": "/home/guy/repo/simple-cs",
+    "Status": 4,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "(3 hours ago) outp, debug"
+  },
+  {
+    "Path": "/home/guy/repo/documents",
+    "Status": 4,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "(6 days ago) final payslips"
+  },
+  {
+    "Path": "/home/guy/repo/DotConfigExt",
+    "Status": 5,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "[2 files]  M neovim/lua/plugins/neotest.lua"
+  },
+  {
+    "Path": "/home/guy/repo/SokoSolve",
+    "Status": 4,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "(3 months ago) cleanup"
+  },
+  {
+    "Path": "/home/guy/repo/git-status",
+    "Status": 5,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "[5 files]  M doc/version-0.3.2.cast"
+  },
+  {
+    "Path": "/home/guy/repo/journal",
+    "Status": 4,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "(10 hours ago) airbnb"
+  },
+  {
+    "Path": "/home/guy/repo/PiggyBack",
+    "Status": 4,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "(12 days ago) wip: format"
+  },
+  {
+    "Path": "/home/guy/repo/DotConfig",
+    "Status": 5,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "[1 files]  M hypr/.config/hypr/hyprland.conf"
+  },
+  {
+    "Path": "/home/guy/repo/CompSciPuzzles",
+    "Status": 4,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "(3 weeks ago) cleanup"
+  },
+  {
+    "Path": "/home/guy/repo/csharp-info",
+    "Status": 4,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "(2 days ago) feat: fzf"
+  },
+  {
+    "Path": "/home/guy/repo/Rustlings",
+    "Status": 4,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "(4 hours ago) airbnb breakage; terminal save/restore"
+  },
+  {
+    "Path": "/home/guy/repo/goinglower-asm",
+    "Status": 4,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "(2 years, 10 months ago) Added video link"
+  },
+  {
+    "Path": "/home/guy/repo/toolz",
+    "Status": 4,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "(9 days ago) misc"
+  },
+  {
+    "Path": "/home/guy/scripts",
+    "Status": 4,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "(3 days ago) clean"
+  }
+]

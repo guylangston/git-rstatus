@@ -80,6 +80,7 @@ public class GitStatusApp : IDisposable
     public bool         ArgVersion => ArgAllFlags.Contains('v') || ArgAllParams.Contains("--version");
     public bool         ArgAbs  => ArgAllFlags.Contains('a') || ArgAllParams.Contains("--abs");
     public bool         ArgScanOnly  => ArgAllFlags.Contains('s') || ArgAllParams.Contains("--scan-only");
+    public bool         ArgJson  => ArgAllFlags.Contains('j') || ArgAllParams.Contains("--json");
 
     public IReadOnlyList<GitRoot> Roots => gitRoots ?? throw new NullReferenceException("gitRoots. Scan expected first");
 
@@ -115,10 +116,14 @@ public class GitStatusApp : IDisposable
             return 0;
         }
 
+        var showUi = !ArgJson;
         timer.Start();
-        logger.Log("Run: Init");
-        consoleRegion.Init(3);
-        consoleRegion.WriteLine("[git-status] scanning...");
+        if (showUi)
+        {
+            logger.Log("Run: Init");
+            consoleRegion.Init(3);
+            consoleRegion.WriteLine("[git-status] scanning...");
+        }
 
         var process = ScanAndQueryAllRoots();
         var frameRate = TimeSpan.FromSeconds(1 / 30f);
@@ -138,7 +143,10 @@ public class GitStatusApp : IDisposable
                 consoleRegion.ReInit(Roots.Count + 1);
                 resize = true;
             }
-            Render();
+            if (showUi)
+            {
+                Render();
+            }
             Thread.Sleep(frameRate);
         }
         if (process.IsFaulted)
@@ -154,9 +162,12 @@ public class GitStatusApp : IDisposable
 
         // Final Render
         timer.Stop();
-        consoleRegion.AllowOverflow = true;
-        Render();
-        Console.WriteLine();
+        if (showUi)
+        {
+            consoleRegion.AllowOverflow = true;
+            Render();
+            Console.WriteLine();
+        }
 
         var firstError = Roots.FirstOrDefault(x=>x.Error != null);
         if (firstError != null)
@@ -168,12 +179,20 @@ public class GitStatusApp : IDisposable
             }
         }
 
-        WriteSummary();
+        if (ArgJson)
+        {
+            var summary = Roots.Select(x=>x.ToSummary()).ToArray();
+            var args = new System.Text.Json.JsonSerializerOptions();
+            args.WriteIndented = true;
+            Console.WriteLine( System.Text.Json.JsonSerializer.Serialize(summary, args));
+        }
+
+        WriteSummaryToLogger();
 
         return 0;
     }
 
-    private void WriteSummary()
+    private void WriteSummaryToLogger()
     {
         foreach(var item in Roots)
         {
@@ -280,17 +299,17 @@ public class GitStatusApp : IDisposable
         """);
     }
 
-    static Dictionary<ItemStatus, ConsoleColor> Colors = new()
+    static Dictionary<GitStatus, ConsoleColor> Colors = new()
     {
-        {ItemStatus.Found,    ConsoleColor.DarkBlue},
-        {ItemStatus.Check,    ConsoleColor.DarkCyan},
-        {ItemStatus.Ignore,   ConsoleColor.DarkGray},
-        {ItemStatus.UpToDate, ConsoleColor.DarkGreen},
-        {ItemStatus.Dirty,    ConsoleColor.DarkRed},
-        {ItemStatus.Behind,   ConsoleColor.Cyan},
-        {ItemStatus.Ahead,    ConsoleColor.Yellow},
-        {ItemStatus.Pull,     ConsoleColor.Magenta},
-        {ItemStatus.Error,    ConsoleColor.Red},
+        {GitStatus.Found,    ConsoleColor.DarkBlue},
+        {GitStatus.Check,    ConsoleColor.DarkCyan},
+        {GitStatus.Ignore,   ConsoleColor.DarkGray},
+        {GitStatus.UpToDate, ConsoleColor.DarkGreen},
+        {GitStatus.Dirty,    ConsoleColor.DarkRed},
+        {GitStatus.Behind,   ConsoleColor.Cyan},
+        {GitStatus.Ahead,    ConsoleColor.Yellow},
+        {GitStatus.Pull,     ConsoleColor.Magenta},
+        {GitStatus.Error,    ConsoleColor.Red},
     };
 
     /// <summary>Render to the console</summary>
@@ -318,7 +337,7 @@ public class GitStatusApp : IDisposable
             }
             var branchCol = $"{branch} {item.BranchStatus}";
             var row = table.WriteRow(
-                    item.Status == ItemStatus.UpToDate ? "Ok" : item.Status.ToString(),
+                    item.Status == GitStatus.UpToDate ? "Ok" : item.Status.ToString(),
                     path,
                     branchCol,
                     item.StatusLine());
@@ -351,7 +370,7 @@ public class GitStatusApp : IDisposable
                         }
                         else if (col.Title == "Git")
                         {
-                            if (data.Status != ItemStatus.UpToDate)
+                            if (data.Status != GitStatus.UpToDate)
                             {
                                 consoleRegion.ForegroundColor = Colors[data.Status];
                             }
