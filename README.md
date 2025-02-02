@@ -5,7 +5,7 @@
 `git-status` is a quality-of-life tool to quickly see that status of numerous
 project. It is a small/simple help unlike the larger fully-feature `lazygit`.
 
-![Screenshot](./doc/screenshot-0.3.0.jpeg)
+![Screenshot](./doc/version-0.3.2.gif)
 
 ## Feature List - CLI
 

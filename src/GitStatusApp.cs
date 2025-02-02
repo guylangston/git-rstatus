@@ -312,9 +312,9 @@ public class GitStatusApp : IDisposable
         {
             var path = ArgAbs ? item.Path : item.PathRelative;
             string? branch = null;
-            if (item.Branch != "main" && item.Branch != "master")
+            if (item.Branch != null && item.Branch != "main" && item.Branch != "master")
             {
-                branch = item.Branch;
+                branch = "" +item.Branch;
             }
             var branchCol = $"{branch} {item.BranchStatus}";
             var row = table.WriteRow(
