@@ -145,7 +145,11 @@ public class GitStatusApp : IDisposable
             }
             if (showUi)
             {
+                // TODO: Dirty check
+                //       Don't draw if not dirty
+                // TODO: Check  time since last draw (wait for x FPS delay)
                 Render();
+
             }
             Thread.Sleep(frameRate);
         }
@@ -287,13 +291,14 @@ public class GitStatusApp : IDisposable
         git-status -switch --param path1 path2 path3
             --no-fetch-all              # dont `git fetch` before `git status`
             --no-fetch path,path        # same as above, but only on matching path
-            -p --pull                   # pull (if status is not dirty)
             --exclude path,path         # dont process repos containing these strings
+            -p, --pull                  # pull (if status is not dirty)
+            -a, --abs                   # use absolute paths
+            -v, --version               # version information
+            -s, --scan-only             # just scan for all git folders and display
             --depth number              # don't recurse deeper than `number`
             --log                       # create log file (in $PWD)
-            -a --abs                    # use absolute paths
-            -v --version                # version information
-            -s --scan-only              # just scan for all git folders and display
+            --json                      # export to json (no other ouptut)
 
         (*) -switch (single char) can be combined, for example -ap will pull and abs paths
         """);

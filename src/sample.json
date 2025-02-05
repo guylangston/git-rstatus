@@ -1,59 +1,827 @@
 [
   {
+    "Path": "/home/guy/.local/share/Trash/files/nvim-alt/lazy/vim-fugitive",
+    "Status": 3,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "(2 weeks ago) Add cW map as commit --fixup=reword:"
+  },
+  {
+    "Path": "/home/guy/.local/share/Trash/files/nvim-alt/lazy/CopilotChat.nvim",
+    "Status": 3,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "(7 days ago) chore(doc): auto generate docs"
+  },
+  {
+    "Path": "/home/guy/.local/share/Trash/files/nvim-alt/lazy/nvim-rg",
+    "Status": 5,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "[1 files] ?? doc/tags"
+  },
+  {
+    "Path": "/home/guy/.local/share/Trash/files/nvim-alt/lazy/nvim-tree.lua",
+    "Status": 3,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "(7 days ago) docs: tidy readme contributing"
+  },
+  {
+    "Path": "/home/guy/.local/share/Trash/files/nvim-alt/lazy/mason.nvim",
+    "Status": 3,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "(7 months ago) fix(ui): fix rendering JSON schemas (#1757)"
+  },
+  {
+    "Path": "/home/guy/.local/share/Trash/files/nvim-alt/lazy/fidget.nvim",
+    "Status": 3,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "(4 weeks ago) chore(doc): auto-generate help docs"
+  },
+  {
+    "Path": "/home/guy/.local/share/Trash/files/nvim-alt/lazy/blink.cmp",
+    "Status": 3,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "(9 days ago) chore: bump version to v0.11.0"
+  },
+  {
+    "Path": "/home/guy/.local/share/Trash/files/nvim-alt/lazy/mini.nvim",
+    "Status": 3,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "(6 days ago) fix(diff): account for possible buffer wipeout during Git source attach"
+  },
+  {
+    "Path": "/home/guy/.local/share/Trash/files/nvim-alt/lazy/catppuccin",
+    "Status": 3,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "(5 weeks ago) fix: match fzf-lua highlights to telescope (#812)"
+  },
+  {
+    "Path": "/home/guy/.local/share/Trash/files/nvim-alt/lazy/copilot.vim",
+    "Status": 3,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "(4 months ago) Copilot.vim 1.41.0"
+  },
+  {
+    "Path": "/home/guy/.local/share/Trash/files/nvim-alt/lazy/plenary.nvim",
+    "Status": 3,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "(3 weeks ago) fix: process all data on_output, even when not terminated with newline (#635)"
+  },
+  {
+    "Path": "/home/guy/.local/share/Trash/files/nvim-alt/lazy/telescope-ui-select.nvim",
+    "Status": 3,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "(1 year, 2 months ago) fix: trigger on choice only once (#39)"
+  },
+  {
+    "Path": "/home/guy/.local/share/Trash/files/nvim-alt/lazy/vim-sleuth",
+    "Status": 3,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "(5 months ago) Fix regression in {} list expansion"
+  },
+  {
+    "Path": "/home/guy/.local/share/Trash/files/nvim-alt/lazy/vim-dispatch",
+    "Status": 3,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "(5 months ago) Allow :FocusDispatch :Make"
+  },
+  {
+    "Path": "/home/guy/.local/share/Trash/files/nvim-alt/lazy/nvim-web-devicons",
+    "Status": 3,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "(7 days ago) chore: replace deprecated neovim API (#558)"
+  },
+  {
+    "Path": "/home/guy/.local/share/Trash/files/nvim-alt/lazy/vim-markdown",
+    "Status": 3,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "(6 weeks ago) Allow colons after language identifiers in fenced code blocks"
+  },
+  {
+    "Path": "/home/guy/.local/share/Trash/files/nvim-alt/lazy/flash.nvim",
+    "Status": 3,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "(5 days ago) chore(build): auto-generate docs"
+  },
+  {
+    "Path": "/home/guy/.local/share/Trash/files/nvim-alt/lazy/mason-tool-installer.nvim",
+    "Status": 3,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "(8 months ago) update description of integrations (#52)"
+  },
+  {
+    "Path": "/home/guy/.local/share/Trash/files/nvim-alt/lazy/which-key.nvim",
+    "Status": 3,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "(6 days ago) chore(build): auto-generate docs"
+  },
+  {
+    "Path": "/home/guy/.local/share/Trash/files/nvim-alt/lazy/mason-lspconfig.nvim",
+    "Status": 3,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "(3 weeks ago) chore: update generated code (#508)"
+  },
+  {
+    "Path": "/home/guy/.local/share/Trash/files/nvim-alt/lazy/telescope.nvim",
+    "Status": 3,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "(9 months ago) fix(builtin.spell_suggest): ciw into black hole register (#3124)"
+  },
+  {
+    "Path": "/home/guy/.local/share/Trash/files/nvim-alt/lazy/nvim-treesitter",
+    "Status": 3,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "(4 days ago) bot(lockfile): update cpp, djot, gotmpl, heex, helm, solidity"
+  },
+  {
+    "Path": "/home/guy/.local/share/Trash/files/nvim-alt/lazy/lazy.nvim",
+    "Status": 3,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "(4 weeks ago) chore(build): auto-generate docs"
+  },
+  {
+    "Path": "/home/guy/.local/share/Trash/files/nvim-alt/lazy/friendly-snippets",
+    "Status": 3,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "(9 weeks ago) Add more nix snippets (#506)"
+  },
+  {
+    "Path": "/home/guy/.local/share/Trash/files/nvim-alt/lazy/nvim-lspconfig",
+    "Status": 3,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "(5 days ago) docs: update configs.md skip-checks: true"
+  },
+  {
+    "Path": "/home/guy/.local/share/Trash/files/nvim/lazy/vim-fugitive",
+    "Status": 3,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "(2 weeks ago) Add cW map as commit --fixup=reword:"
+  },
+  {
+    "Path": "/home/guy/.local/share/Trash/files/nvim/lazy/CopilotChat.nvim",
+    "Status": 5,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "[1 files] ?? doc/tags"
+  },
+  {
+    "Path": "/home/guy/.local/share/Trash/files/nvim/lazy/nvim-rg",
+    "Status": 5,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "[1 files] ?? doc/tags"
+  },
+  {
+    "Path": "/home/guy/.local/share/Trash/files/nvim/lazy/nvim-tree.lua",
+    "Status": 3,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "(7 days ago) docs: tidy readme contributing"
+  },
+  {
+    "Path": "/home/guy/.local/share/Trash/files/nvim/lazy/mason.nvim",
+    "Status": 3,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "(7 months ago) fix(ui): fix rendering JSON schemas (#1757)"
+  },
+  {
+    "Path": "/home/guy/.local/share/Trash/files/nvim/lazy/fidget.nvim",
+    "Status": 3,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "(4 weeks ago) chore(doc): auto-generate help docs"
+  },
+  {
+    "Path": "/home/guy/.local/share/Trash/files/nvim/lazy/blink.cmp",
+    "Status": 3,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "(9 days ago) chore: bump version to v0.11.0"
+  },
+  {
+    "Path": "/home/guy/.local/share/Trash/files/nvim/lazy/mini.nvim",
+    "Status": 3,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "(6 days ago) fix(diff): account for possible buffer wipeout during Git source attach"
+  },
+  {
+    "Path": "/home/guy/.local/share/Trash/files/nvim/lazy/catppuccin",
+    "Status": 3,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "(5 weeks ago) fix: match fzf-lua highlights to telescope (#812)"
+  },
+  {
+    "Path": "/home/guy/.local/share/Trash/files/nvim/lazy/copilot.vim",
+    "Status": 3,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "(4 months ago) Copilot.vim 1.41.0"
+  },
+  {
+    "Path": "/home/guy/.local/share/Trash/files/nvim/lazy/plenary.nvim",
+    "Status": 3,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "(3 weeks ago) fix: process all data on_output, even when not terminated with newline (#635)"
+  },
+  {
+    "Path": "/home/guy/.local/share/Trash/files/nvim/lazy/telescope-ui-select.nvim",
+    "Status": 3,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "(1 year, 2 months ago) fix: trigger on choice only once (#39)"
+  },
+  {
+    "Path": "/home/guy/.local/share/Trash/files/nvim/lazy/vim-sleuth",
+    "Status": 3,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "(5 months ago) Fix regression in {} list expansion"
+  },
+  {
+    "Path": "/home/guy/.local/share/Trash/files/nvim/lazy/vim-dispatch",
+    "Status": 3,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "(5 months ago) Allow :FocusDispatch :Make"
+  },
+  {
+    "Path": "/home/guy/.local/share/Trash/files/nvim/lazy/nvim-web-devicons",
+    "Status": 3,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "(7 days ago) chore: replace deprecated neovim API (#558)"
+  },
+  {
+    "Path": "/home/guy/.local/share/Trash/files/nvim/lazy/vim-markdown",
+    "Status": 3,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "(6 weeks ago) Allow colons after language identifiers in fenced code blocks"
+  },
+  {
+    "Path": "/home/guy/.local/share/Trash/files/nvim/lazy/flash.nvim",
+    "Status": 3,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "(5 days ago) chore(build): auto-generate docs"
+  },
+  {
+    "Path": "/home/guy/.local/share/Trash/files/nvim/lazy/mason-tool-installer.nvim",
+    "Status": 3,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "(8 months ago) update description of integrations (#52)"
+  },
+  {
+    "Path": "/home/guy/.local/share/Trash/files/nvim/lazy/which-key.nvim",
+    "Status": 3,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "(6 days ago) chore(build): auto-generate docs"
+  },
+  {
+    "Path": "/home/guy/.local/share/Trash/files/nvim/lazy/mason-lspconfig.nvim",
+    "Status": 3,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "(3 weeks ago) chore: update generated code (#508)"
+  },
+  {
+    "Path": "/home/guy/.local/share/Trash/files/nvim/lazy/telescope.nvim",
+    "Status": 3,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "(9 months ago) fix(builtin.spell_suggest): ciw into black hole register (#3124)"
+  },
+  {
+    "Path": "/home/guy/.local/share/Trash/files/nvim/lazy/nvim-treesitter",
+    "Status": 3,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "(4 days ago) bot(lockfile): update cpp, djot, gotmpl, heex, helm, solidity"
+  },
+  {
+    "Path": "/home/guy/.local/share/Trash/files/nvim/lazy/lazy.nvim",
+    "Status": 3,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "(4 weeks ago) chore(build): auto-generate docs"
+  },
+  {
+    "Path": "/home/guy/.local/share/Trash/files/nvim/lazy/friendly-snippets",
+    "Status": 3,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "(9 weeks ago) Add more nix snippets (#506)"
+  },
+  {
+    "Path": "/home/guy/.local/share/Trash/files/nvim/lazy/nvim-lspconfig",
+    "Status": 3,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "(5 days ago) docs: update configs.md skip-checks: true"
+  },
+  {
+    "Path": "/home/guy/.local/share/zinit/zinit.git",
+    "Status": 6,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "## main...origin/main [behind 1]"
+  },
+  {
+    "Path": "/home/guy/.local/share/zinit/plugins/zdharma-continuum---zinit-annex-rust",
+    "Status": 3,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "(1 year, 10 months ago) Merge pull request #14 from zdharma-continuum/ci/gh-action-lint-workflow"
+  },
+  {
+    "Path": "/home/guy/.local/share/zinit/plugins/zdharma-continuum---zinit-annex-as-monitor",
+    "Status": 3,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "(1 year, 10 months ago) feat: add lint gh action workflow (#23)"
+  },
+  {
+    "Path": "/home/guy/.local/share/zinit/plugins/zdharma-continuum---fast-syntax-highlighting",
+    "Status": 3,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "(1 year, 7 months ago) Add \u0027--message\u0027 to git commit syntax highlighting (#57)"
+  },
+  {
+    "Path": "/home/guy/.local/share/zinit/plugins/zsh-users---zsh-autosuggestions",
+    "Status": 3,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "(10 weeks ago) Merge pull request #813 from tesar-tech/patch-1"
+  },
+  {
+    "Path": "/home/guy/.local/share/zinit/plugins/zdharma-continuum---zinit-annex-patch-dl",
+    "Status": 3,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "(1 year, 2 months ago) fix: log message convention"
+  },
+  {
+    "Path": "/home/guy/.local/share/zinit/plugins/zdharma-continuum---zinit-annex-bin-gem-node",
+    "Status": 3,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "(1 year, 1 month ago) fix: remove extraneous character in log message (#35)"
+  },
+  {
+    "Path": "/home/guy/.local/share/nvim/lazy/vim-fugitive",
+    "Status": 3,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "(6 hours ago) Drop */# maps in visual mode"
+  },
+  {
+    "Path": "/home/guy/.local/share/nvim/lazy/CopilotChat.nvim",
+    "Status": 3,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "(7 days ago) chore(doc): auto generate docs"
+  },
+  {
+    "Path": "/home/guy/.local/share/nvim/lazy/neotest-dotnet",
+    "Status": 3,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "(5 weeks ago) Merge pull request #122 from Dynge/feature/shorten-xunit-names"
+  },
+  {
+    "Path": "/home/guy/.local/share/nvim/lazy/nvim-rg",
+    "Status": 5,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "[1 files] ?? doc/tags"
+  },
+  {
+    "Path": "/home/guy/.local/share/nvim/lazy/nvim-tree.lua",
+    "Status": 3,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "(6 hours ago) fix(#3059): test for presence of new 0.11 API vim.hl.range (#3060)"
+  },
+  {
+    "Path": "/home/guy/.local/share/nvim/lazy/mason.nvim",
+    "Status": 3,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "(7 months ago) fix(ui): fix rendering JSON schemas (#1757)"
+  },
+  {
+    "Path": "/home/guy/.local/share/nvim/lazy/fidget.nvim",
+    "Status": 3,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "(4 weeks ago) chore(doc): auto-generate help docs"
+  },
+  {
+    "Path": "/home/guy/.local/share/nvim/lazy/blink.cmp",
+    "Status": 3,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "(9 days ago) chore: bump version to v0.11.0"
+  },
+  {
+    "Path": "/home/guy/.local/share/nvim/lazy/mini.nvim",
+    "Status": 3,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "(20 hours ago) feat(base16): add new plugin integrations"
+  },
+  {
+    "Path": "/home/guy/.local/share/nvim/lazy/catppuccin",
+    "Status": 3,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "(4 days ago) feat(gitsign): improve gitsign inline add and delete colors (#808)"
+  },
+  {
+    "Path": "/home/guy/.local/share/nvim/lazy/copilot.vim",
+    "Status": 3,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "(4 months ago) Copilot.vim 1.41.0"
+  },
+  {
+    "Path": "/home/guy/.local/share/nvim/lazy/neotest",
+    "Status": 3,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "(5 weeks ago) feat: triggering QuickFixCmdPost event after setting quickfix list"
+  },
+  {
+    "Path": "/home/guy/.local/share/nvim/lazy/nvim-dap",
+    "Status": 3,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "(4 days ago) Use repl src filetype info when resolving configurations while within repl (#1438)"
+  },
+  {
+    "Path": "/home/guy/.local/share/nvim/lazy/plenary.nvim",
+    "Status": 3,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "(3 weeks ago) fix: process all data on_output, even when not terminated with newline (#635)"
+  },
+  {
+    "Path": "/home/guy/.local/share/nvim/lazy/telescope-ui-select.nvim",
+    "Status": 3,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "(1 year, 2 months ago) fix: trigger on choice only once (#39)"
+  },
+  {
+    "Path": "/home/guy/.local/share/nvim/lazy/FixCursorHold.nvim",
+    "Status": 3,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "(2 years ago) Merge pull request #15 from a5ob7r/fix_invalid_url"
+  },
+  {
+    "Path": "/home/guy/.local/share/nvim/lazy/vim-sleuth",
+    "Status": 3,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "(5 months ago) Fix regression in {} list expansion"
+  },
+  {
+    "Path": "/home/guy/.local/share/nvim/lazy/vim-dispatch",
+    "Status": 3,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "(5 months ago) Allow :FocusDispatch :Make"
+  },
+  {
+    "Path": "/home/guy/.local/share/nvim/lazy/nvim-web-devicons",
+    "Status": 3,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "(2 days ago) fix: add missing filetype icon mapping for Norg (#559)"
+  },
+  {
+    "Path": "/home/guy/.local/share/nvim/lazy/nvim-dap-ui",
+    "Status": 3,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "(11 days ago) feat: description for mappings (#425)"
+  },
+  {
+    "Path": "/home/guy/.local/share/nvim/lazy/vim-markdown",
+    "Status": 3,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "(6 weeks ago) Allow colons after language identifiers in fenced code blocks"
+  },
+  {
+    "Path": "/home/guy/.local/share/nvim/lazy/flash.nvim",
+    "Status": 3,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "(5 days ago) chore(build): auto-generate docs"
+  },
+  {
+    "Path": "/home/guy/.local/share/nvim/lazy/mason-tool-installer.nvim",
+    "Status": 3,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "(4 days ago) Merge pull request #59 from tristone13th/main"
+  },
+  {
+    "Path": "/home/guy/.local/share/nvim/lazy/which-key.nvim",
+    "Status": 3,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "(6 days ago) chore(build): auto-generate docs"
+  },
+  {
+    "Path": "/home/guy/.local/share/nvim/lazy/mason-lspconfig.nvim",
+    "Status": 3,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "(3 days ago) chore: update generated code (#514)"
+  },
+  {
+    "Path": "/home/guy/.local/share/nvim/lazy/telescope.nvim",
+    "Status": 3,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "(9 months ago) fix(builtin.spell_suggest): ciw into black hole register (#3124)"
+  },
+  {
+    "Path": "/home/guy/.local/share/nvim/lazy/nvim-treesitter",
+    "Status": 3,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "(4 hours ago) bot(lockfile): update c, query, rst, swift, vhdl"
+  },
+  {
+    "Path": "/home/guy/.local/share/nvim/lazy/lazy.nvim",
+    "Status": 3,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "(4 days ago) chore(build): auto-generate rockspec mappings"
+  },
+  {
+    "Path": "/home/guy/.local/share/nvim/lazy/nvim-nio",
+    "Status": 3,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "(2 weeks ago) fix: remove vim.validate"
+  },
+  {
+    "Path": "/home/guy/.local/share/nvim/lazy/friendly-snippets",
+    "Status": 3,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "(9 weeks ago) Add more nix snippets (#506)"
+  },
+  {
+    "Path": "/home/guy/.local/share/nvim/lazy/nvim-lspconfig",
+    "Status": 3,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "(2 hours ago) docs: update configs.md skip-checks: true"
+  },
+  {
+    "Path": "/home/guy/repo/codemap",
+    "Status": 3,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "(11 months ago) fix: OS dependancy"
+  },
+  {
+    "Path": "/home/guy/repo/mavenplan-www",
+    "Status": 3,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "(2 years, 5 months ago) Updated; Added sort data"
+  },
+  {
+    "Path": "/home/guy/repo/documents",
+    "Status": 3,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "(7 days ago) final payslips"
+  },
+  {
+    "Path": "/home/guy/repo/quarterback",
+    "Status": 3,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "(10 months ago) feat: check language alias"
+  },
+  {
+    "Path": "/home/guy/repo/pbp",
+    "Status": 3,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "(7 days ago) fix: bad security check"
+  },
+  {
+    "Path": "/home/guy/repo/DotConfigExt",
+    "Status": 3,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "(24 hours ago) better find file mappings"
+  },
+  {
+    "Path": "/home/guy/repo/DotConfig",
+    "Status": 3,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "(18 hours ago) prompt icon"
+  },
+  {
+    "Path": "/home/guy/repo/DotConfig/tmux/.config/tmux/plugins/tmux",
+    "Status": 3,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "(2 weeks ago) fix: make the space in @catppuccin_window_flags_icon_format user-configurable (#465)"
+  },
+  {
+    "Path": "/home/guy/repo/DotConfig/tmux/.config/tmux/plugins/tmux-sensible",
+    "Status": 3,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "(2 years, 6 months ago) Merge pull request #66 from jjant/patch-1"
+  },
+  {
+    "Path": "/home/guy/repo/DotConfig/tmux/.config/tmux/plugins/tpm",
+    "Status": 3,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "(1 year, 11 months ago) Merge pull request #243 from andyrichardson/patch-1"
+  },
+  {
     "Path": "/home/guy/repo/EulerProject",
-    "Status": 4,
+    "Status": 3,
     "Behind": 0,
     "Ahead": 0,
     "NewFiles": 0,
     "SummaryOneLine": "(4 months ago) holiday progress"
   },
   {
-    "Path": "/home/guy/repo/pbp",
-    "Status": 4,
+    "Path": "/home/guy/repo/csharp-info",
+    "Status": 3,
     "Behind": 0,
     "Ahead": 0,
     "NewFiles": 0,
-    "SummaryOneLine": "(6 days ago) fix: bad security check"
+    "SummaryOneLine": "(3 days ago) feat: fzf"
   },
   {
-    "Path": "/home/guy/repo/learning",
-    "Status": 4,
+    "Path": "/home/guy/repo/git-status-2",
+    "Status": 3,
     "Behind": 0,
     "Ahead": 0,
     "NewFiles": 0,
-    "SummaryOneLine": "(3 weeks ago) bash LSP"
+    "SummaryOneLine": "(15 hours ago) feat: --json"
   },
   {
-    "Path": "/home/guy/repo/simple-cs",
-    "Status": 4,
+    "Path": "/home/guy/repo/journal",
+    "Status": 3,
     "Behind": 0,
     "Ahead": 0,
     "NewFiles": 0,
-    "SummaryOneLine": "(3 hours ago) outp, debug"
+    "SummaryOneLine": "(2 hours ago) misc"
   },
   {
-    "Path": "/home/guy/repo/documents",
-    "Status": 4,
+    "Path": "/home/guy/repo/PdfExtractAndUpdate",
+    "Status": 3,
     "Behind": 0,
     "Ahead": 0,
     "NewFiles": 0,
-    "SummaryOneLine": "(6 days ago) final payslips"
-  },
-  {
-    "Path": "/home/guy/repo/DotConfigExt",
-    "Status": 5,
-    "Behind": 0,
-    "Ahead": 0,
-    "NewFiles": 0,
-    "SummaryOneLine": "[2 files]  M neovim/lua/plugins/neotest.lua"
-  },
-  {
-    "Path": "/home/guy/repo/SokoSolve",
-    "Status": 4,
-    "Behind": 0,
-    "Ahead": 0,
-    "NewFiles": 0,
-    "SummaryOneLine": "(3 months ago) cleanup"
+    "SummaryOneLine": "(4 months ago) final submission"
   },
   {
     "Path": "/home/guy/repo/git-status",
@@ -61,78 +829,430 @@
     "Behind": 0,
     "Ahead": 0,
     "NewFiles": 0,
-    "SummaryOneLine": "[5 files]  M doc/version-0.3.2.cast"
+    "SummaryOneLine": "[1 files]  M src/sample.json"
   },
   {
-    "Path": "/home/guy/repo/journal",
-    "Status": 4,
+    "Path": "/home/guy/repo/SokoSolve",
+    "Status": 3,
     "Behind": 0,
     "Ahead": 0,
     "NewFiles": 0,
-    "SummaryOneLine": "(10 hours ago) airbnb"
+    "SummaryOneLine": "(3 months ago) cleanup"
+  },
+  {
+    "Path": "/home/guy/repo/simple-cs",
+    "Status": 3,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "(18 hours ago) outp, debug"
   },
   {
     "Path": "/home/guy/repo/PiggyBack",
-    "Status": 4,
+    "Status": 3,
     "Behind": 0,
     "Ahead": 0,
     "NewFiles": 0,
-    "SummaryOneLine": "(12 days ago) wip: format"
+    "SummaryOneLine": "(13 days ago) wip: format"
   },
   {
-    "Path": "/home/guy/repo/DotConfig",
-    "Status": 5,
+    "Path": "/home/guy/repo/toolz",
+    "Status": 3,
     "Behind": 0,
     "Ahead": 0,
     "NewFiles": 0,
-    "SummaryOneLine": "[1 files]  M hypr/.config/hypr/hyprland.conf"
+    "SummaryOneLine": "(10 days ago) misc"
   },
   {
-    "Path": "/home/guy/repo/CompSciPuzzles",
-    "Status": 4,
+    "Path": "/home/guy/repo/git-status-3",
+    "Status": 7,
     "Behind": 0,
     "Ahead": 0,
     "NewFiles": 0,
-    "SummaryOneLine": "(3 weeks ago) cleanup"
+    "SummaryOneLine": "## main...origin/main [ahead 1, behind 22]"
   },
   {
-    "Path": "/home/guy/repo/csharp-info",
-    "Status": 4,
+    "Path": "/home/guy/repo/archive/SelfContainedMarkdownWebsite",
+    "Status": 3,
     "Behind": 0,
     "Ahead": 0,
     "NewFiles": 0,
-    "SummaryOneLine": "(2 days ago) feat: fzf"
-  },
-  {
-    "Path": "/home/guy/repo/Rustlings",
-    "Status": 4,
-    "Behind": 0,
-    "Ahead": 0,
-    "NewFiles": 0,
-    "SummaryOneLine": "(4 hours ago) airbnb breakage; terminal save/restore"
+    "SummaryOneLine": "(5 weeks ago) wip: firming up ResourceModel"
   },
   {
     "Path": "/home/guy/repo/goinglower-asm",
-    "Status": 4,
+    "Status": 3,
     "Behind": 0,
     "Ahead": 0,
     "NewFiles": 0,
     "SummaryOneLine": "(2 years, 10 months ago) Added video link"
   },
   {
-    "Path": "/home/guy/repo/toolz",
-    "Status": 4,
+    "Path": "/home/guy/repo/ext-ref/busybox",
+    "Status": 3,
     "Behind": 0,
     "Ahead": 0,
     "NewFiles": 0,
-    "SummaryOneLine": "(9 days ago) misc"
+    "SummaryOneLine": "(7 months ago) ash: move hashvar() calls into findvar()"
+  },
+  {
+    "Path": "/home/guy/repo/ext-ref/dotnet/runtime",
+    "Status": 3,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "(5 hours ago) Keep test PDB in helix payload for native AOT (#111949)"
+  },
+  {
+    "Path": "/home/guy/repo/ext-ref/linux",
+    "Status": 3,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "(8 weeks ago) Merge tag \u0027clk-fixes-for-linus\u0027 of git://git.kernel.org/pub/scm/linux/kernel/git/clk/linux"
+  },
+  {
+    "Path": "/home/guy/repo/ext-ref/dwm",
+    "Status": 3,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "(3 months ago) Avoid unsigned integer underflow in drw_text()"
+  },
+  {
+    "Path": "/home/guy/repo/ext-ref/coreutils",
+    "Status": 3,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "(5 hours ago) maint: pacify \u2018gcc -Wswitch-enum\u2019"
+  },
+  {
+    "Path": "/home/guy/repo/ext-ref/glibc",
+    "Status": 3,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "(16 hours ago) elf: Use _dl_find_object instead of _dl_find_dso_for_object in dlopen"
+  },
+  {
+    "Path": "/home/guy/repo/Rustlings",
+    "Status": 5,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "[2 files]  M src/GuyFS/Controllers/RentalController.cs"
+  },
+  {
+    "Path": "/home/guy/repo/learning",
+    "Status": 3,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "(3 weeks ago) bash LSP"
+  },
+  {
+    "Path": "/home/guy/.cache/yay/7-zip-full",
+    "Status": 3,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "(9 weeks ago) New version (24.09)"
+  },
+  {
+    "Path": "/home/guy/.cache/yay/input-leap-git",
+    "Status": 5,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "[6 files]  M PKGBUILD"
+  },
+  {
+    "Path": "/home/guy/.cache/yay/input-leap-git/src/input-leap",
+    "Status": 3,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "(3 months ago) Merge pull request #2086 from Jakjm/master"
+  },
+  {
+    "Path": "/home/guy/.cache/yay/sengi-appimage",
+    "Status": 3,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "(1 year, 6 months ago) 1.6.3"
+  },
+  {
+    "Path": "/home/guy/.cache/yay/wezterm-git",
+    "Status": 5,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "[1 files]  M PKGBUILD"
+  },
+  {
+    "Path": "/home/guy/.cache/yay/ascii-image-converter",
+    "Status": 3,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "(2 years, 2 months ago) upgpkg: ascii-image-converter 1.13.1-1"
+  },
+  {
+    "Path": "/home/guy/.cache/yay/figlet-fonts",
+    "Status": 5,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "[5 files] ?? contributed.tar.gz"
+  },
+  {
+    "Path": "/home/guy/.cache/yay/jetbrains-toolbox",
+    "Status": 5,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "[6 files] ?? jetbrains-toolbox-2.0.5.17700-1-x86_64.pkg.tar.zst"
+  },
+  {
+    "Path": "/home/guy/.cache/yay/pistol-bin",
+    "Status": 5,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "[6 files] ?? LICENSE"
+  },
+  {
+    "Path": "/home/guy/.cache/yay/chatgpt-shell-cli",
+    "Status": 5,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "[2 files] ?? chatGPT-shell-cli/"
+  },
+  {
+    "Path": "/home/guy/.cache/yay/netcoredbg",
+    "Status": 5,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "[4 files] ?? dotnet_runtime_81cabf2.tar.gz"
+  },
+  {
+    "Path": "/home/guy/.cache/yay/google-chrome",
+    "Status": 5,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "[6 files] ?? google-chrome-129.0.6668.100-1-x86_64.pkg.tar.zst"
+  },
+  {
+    "Path": "/home/guy/.cache/yay/hyprland-qtutils",
+    "Status": 3,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "(6 weeks ago) 0.1.1-3: Add \u0060qqc2-desktop-style\u0060 as dependency"
+  },
+  {
+    "Path": "/home/guy/.cache/yay/imhex",
+    "Status": 5,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "[4 files] ?? imhex-1.35.4.tar.gz"
+  },
+  {
+    "Path": "/home/guy/.cache/yay/waynergy",
+    "Status": 5,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "[3 files] ?? waynergy-0.0.17-1-x86_64.pkg.tar.zst"
+  },
+  {
+    "Path": "/home/guy/.cache/yay/whatsie-git",
+    "Status": 5,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "[6 files]  M PKGBUILD"
+  },
+  {
+    "Path": "/home/guy/.cache/yay/nvimpager",
+    "Status": 3,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "(9 months ago) build: v0.13.0"
+  },
+  {
+    "Path": "/home/guy/.cache/yay/visual-studio-code-bin",
+    "Status": 5,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "[6 files] ?? code_x64_1.96.0.tar.gz"
+  },
+  {
+    "Path": "/home/guy/.cache/yay/delta",
+    "Status": 5,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "[1 files] ?? delta/"
+  },
+  {
+    "Path": "/home/guy/.cache/yay/delta/src/delta",
+    "Status": 3,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "(4 years, 10 months ago) Import Upstream version 2006.08.03"
+  },
+  {
+    "Path": "/home/guy/.cache/yay/whatsie",
+    "Status": 5,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "[4 files] ?? src/"
+  },
+  {
+    "Path": "/home/guy/.cache/yay/yay-git",
+    "Status": 5,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "[1 files]  M PKGBUILD"
+  },
+  {
+    "Path": "/home/guy/.cache/yay/fvm",
+    "Status": 6,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "## master...origin/master [behind 1]"
+  },
+  {
+    "Path": "/home/guy/.cache/yay/localsend",
+    "Status": 3,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "(3 months ago) 1.16.1"
+  },
+  {
+    "Path": "/home/guy/.cache/yay/localsend/fvm-cache/versions/3.24.4",
+    "Status": 7,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "## stable...origin/stable [ahead 29, behind 1329]"
+  },
+  {
+    "Path": "/home/guy/.cache/yay/localsend/fvm-cache/versions/3.13.9",
+    "Status": 7,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "## stable...origin/stable [ahead 37, behind 7180]"
+  },
+  {
+    "Path": "/home/guy/.cache/yay/localsend/fvm-cache/cache.git",
+    "Status": 6,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "## master...origin/master [behind 310]"
+  },
+  {
+    "Path": "/home/guy/play/GtkSharp",
+    "Status": 3,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "(11 months ago) Merge pull request #429 from lytico/lytico/net8"
+  },
+  {
+    "Path": "/home/guy/.cargo/git/checkouts/xcb-imdkit-rs-1f85ad932c246e33/358e226",
+    "Status": 5,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "[1 files] ?? .cargo-ok"
+  },
+  {
+    "Path": "/home/guy/.cargo/git/checkouts/xcb-imdkit-rs-1f85ad932c246e33/358e226/deps/xcb-imdkit",
+    "Status": 3,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "(3 years, 11 months ago) bump version"
+  },
+  {
+    "Path": "/home/guy/.cargo/git/checkouts/sqlite-cache-fe02700531514b7d/0961b50",
+    "Status": 5,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "[1 files] ?? .cargo-ok"
+  },
+  {
+    "Path": "/home/guy/.pub-cache/git/flutter-plugins-58748dae405df5e68a131e4905d48e75d0624be2",
+    "Status": 3,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "(5 months ago) revert: revert not handle content uri"
+  },
+  {
+    "Path": "/home/guy/.pub-cache/git/permission_handler_windows_noop-2dadd8afbf81e0e3e4791d7144e689555e58f649",
+    "Status": 3,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "(1 year, 2 months ago) feat: loosening constraints"
+  },
+  {
+    "Path": "/home/guy/.tmux/plugins/tpm",
+    "Status": 3,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "(1 year, 11 months ago) Merge pull request #243 from andyrichardson/patch-1"
   },
   {
     "Path": "/home/guy/scripts",
-    "Status": 4,
+    "Status": 5,
     "Behind": 0,
     "Ahead": 0,
     "NewFiles": 0,
-    "SummaryOneLine": "(3 days ago) clean"
+    "SummaryOneLine": "[1 files]  M git-status.ps1"
+  },
+  {
+    "Path": "/home/guy/.config/tmux/plugins/tmux",
+    "Status": 3,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "(2 weeks ago) fix: make the space in @catppuccin_window_flags_icon_format user-configurable (#465)"
+  },
+  {
+    "Path": "/home/guy/.config/tmux/plugins/tmux-sensible",
+    "Status": 3,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "(2 years, 6 months ago) Merge pull request #66 from jjant/patch-1"
+  },
+  {
+    "Path": "/home/guy/.config/tmux/plugins/tpm",
+    "Status": 3,
+    "Behind": 0,
+    "Ahead": 0,
+    "NewFiles": 0,
+    "SummaryOneLine": "(1 year, 11 months ago) Merge pull request #243 from andyrichardson/patch-1"
   }
 ]
