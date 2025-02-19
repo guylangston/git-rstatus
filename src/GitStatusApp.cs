@@ -75,12 +75,12 @@ public class GitStatusApp : IDisposable
     public bool         ArgRemote { get; set; }
     public int          ArgMaxDepth { get; } = 8;
     public int          ArgThreadCount { get; } = 8;
-    public bool         ArgPull => ArgAllFlags.Contains('p') || ArgAllParams.Contains("--pull");
-    public bool         ArgHelp => ArgAllFlags.Contains('?') ||  ArgAllFlags.Contains('h') || ArgAllParams.Contains("--help");
-    public bool         ArgVersion => ArgAllFlags.Contains('v') || ArgAllParams.Contains("--version");
-    public bool         ArgAbs  => ArgAllFlags.Contains('a') || ArgAllParams.Contains("--abs");
-    public bool         ArgScanOnly  => ArgAllFlags.Contains('s') || ArgAllParams.Contains("--scan-only");
-    public bool         ArgJson  => ArgAllFlags.Contains('j') || ArgAllParams.Contains("--json");
+    public bool         ArgPull     => ArgAllFlags.Contains('p') || ArgAllParams.Contains("--pull");
+    public bool         ArgHelp     => ArgAllFlags.Contains('?') ||  ArgAllFlags.Contains('h') || ArgAllParams.Contains("--help");
+    public bool         ArgVersion  => ArgAllFlags.Contains('v') || ArgAllParams.Contains("--version");
+    public bool         ArgAbs      => ArgAllFlags.Contains('a') || ArgAllParams.Contains("--abs");
+    public bool         ArgScanOnly => ArgAllFlags.Contains('s') || ArgAllParams.Contains("--scan-only");
+    public bool         ArgJson     => ArgAllFlags.Contains('j') || ArgAllParams.Contains("--json");
 
     public IReadOnlyList<GitRoot> Roots => gitRoots ?? throw new NullReferenceException("gitRoots. Scan expected first");
 
