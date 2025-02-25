@@ -397,10 +397,11 @@ public class GitStatusApp : IDisposable
         var donr = Roots.Count(x=>x.IsComplete);
         if (!consoleRegion.AllowOverflow)
         {
-            consoleRegion.ForegroundColor = ConsoleColor.Black;
-            consoleRegion.BackgroundColor = ConsoleColor.DarkGray;
+            consoleRegion.ForegroundColor = ConsoleColor.Yellow;
+            consoleRegion.BackgroundColor = ConsoleColor.Black;
+            consoleRegion.Write($"| {spinner.Next()} | ");
             consoleRegion.Write(
-                    $" >> {globalStatus,9} [{spinner.Next()}] Items {donr}/{Roots.Count} in {timer.Elapsed.TotalSeconds:0.0} sec <<"
+                    $" >> {globalStatus,9} Items {donr}/{Roots.Count} in {timer.Elapsed.TotalSeconds:0.0} sec <<"
                     );
             consoleRegion.Revert();
         }
