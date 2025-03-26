@@ -1,8 +1,8 @@
-# git-status
+# git-rstatus
 
 > Fast recursive scan for all git repos. Async `git fetch && git status`
 
-`git-status` is a quality-of-life tool to quickly see that status of numerous
+`git-rstatus` is a quality-of-life tool to quickly see that status of numerous
 project. It is a small/simple help unlike the larger fully-feature `lazygit`.
 
 ![Screenshot](./doc/version-0.3.2.gif)
