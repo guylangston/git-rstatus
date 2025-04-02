@@ -9,8 +9,8 @@ public static class Program
         {
             if (args.Contains("--log"))
             {
-                string logFilePath = "git-status.log";
-                traceListener= new TextWriterTraceListener(logFilePath);
+                string logFilePath = "git-rstatus.log";
+                traceListener = new TextWriterTraceListener(logFilePath);
                 Trace.Listeners.Add(traceListener);
             }
             if (args.Contains("--bench"))

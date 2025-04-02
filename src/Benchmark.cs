@@ -30,7 +30,6 @@ public static class Benchmark
         var fps = (float)cc / timer.Elapsed.TotalSeconds;
         Console.WriteLine($"{cc} frames in {timer} = {fps} fps");
 
-
         return 0;
     }
 }

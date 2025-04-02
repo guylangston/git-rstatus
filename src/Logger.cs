@@ -42,8 +42,13 @@ public class LoggerDebug : ILogger
 
 public class SimpleLoggerFactory : ILoggerFactory
 {
+    public SimpleLoggerFactory()
+    {
+    }
+
     public ILogger GetLogger(string name)
     {
+        // NOTE: to view the log add `--log` to the config line. See Program.cs:5
         return new LoggerDebug(name);
     }
 

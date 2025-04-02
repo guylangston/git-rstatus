@@ -2,13 +2,18 @@ using System.Collections.Concurrent;
 
 public class GitFolderScanner
 {
+    // Inputs
     public ConcurrentBag<GitRoot> Roots { get; } = new();
     public Predicate<string> Exclude { get; init; } = (_)=>false;
+
+    // Outputs
+    public int ProgressDirectories { get; private set; }
 
     public Task Scan(string root, int maxDepth = 4)
     {
         void Recurse(string path, int depth)
         {
+            ProgressDirectories++;
             try
             {
                 if (Directory.Exists(Path.Combine(path, ".git/")))

@@ -122,12 +122,12 @@ public class GitStatusApp : IDisposable
         {
             logger.Log("Run: Init");
             consoleRegion.Init(3);
-            consoleRegion.WriteLine("[git-status] scanning...");
+            consoleRegion.WriteLine($"[{AppName}] scanning...");
         }
 
-        var process = ScanAndQueryAllRoots();
         var frameRate = TimeSpan.FromSeconds(1 / 30f);
         var resize = false;
+        var process = ScanAndQueryAllRoots();
         while(!process.IsCompleted)
         {
             if (scanComplete && !resize)
@@ -139,7 +139,7 @@ public class GitStatusApp : IDisposable
                 }
                 logger.Log("Run: ReInit/Resize");
                 // First draw after scanning resizes the dynamic console region
-                consoleRegion.WriteLine($"[git-status] found {Roots.Count}, fetching...");
+                consoleRegion.WriteLine($"[{AppName}] found {Roots.Count}, fetching...");
                 consoleRegion.ReInit(Roots.Count + 1);
                 resize = true;
             }
@@ -249,6 +249,8 @@ public class GitStatusApp : IDisposable
     private async Task ScanForGitFolders()
     {
         var scanResult = new ConcurrentBag<GitRoot>();
+        int scaned = 0;
+        int roots =  0;
         await Parallel.ForEachAsync(ArgPath, async (path, ct) =>
         {
             var comp = new GitFolderScanner()
@@ -267,28 +269,33 @@ public class GitStatusApp : IDisposable
                 }
             };
             await comp.Scan(path, ArgMaxDepth);
+            Interlocked.Increment(ref roots);
+            Interlocked.Add(ref scaned, comp.ProgressDirectories);
+
             foreach (var r in comp.Roots)
             {
                 scanResult.Add(r);
             }
         });
+        logger.Log($"Scanned: {roots} roots, {scaned} folders");
         gitRoots = scanResult.ToArray();
         scanComplete = true;
     }
 
     string? GetVersion() => System.Reflection.Assembly.GetExecutingAssembly().GetName().Version?.ToString()[..^2];
     string GetProjectDescription() => "Fast recursive git status (with fetch and pull)";
-    string GetProjectUrl() => "https://github.com/guylangston/git-status";
+    string GetProjectUrl() => "https://github.com/guylangston/git-rstatus";
+    const string AppName = "git-rstatus";
 
     public void DisplayHelp()
     {
         Console.WriteLine(
         $"""
-        git-status: {GetProjectDescription()}
+        {AppName}: {GetProjectDescription()}
            version: {GetVersion() ?? "dev"}
            project: {GetProjectUrl()}
 
-        git-status -switch --param path1 path2 path3
+        {AppName} -switch --param path1 path2 path3
             --no-fetch-all              # dont `git fetch` before `git status`
             --no-fetch path,path        # same as above, but only on matching path
             --exclude path,path         # dont process repos containing these strings
