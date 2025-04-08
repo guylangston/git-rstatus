@@ -6,7 +6,7 @@ publish-linux: build
 	@[ ! -d ./dist ] && mkdir ./dist || rm -f ./dist/*
 	@cd ./src; dotnet publish -c Release --sc -r linux-x64 -p:PublishTrimmed=true -p:PublishSingleFile=true -o ../dist/
 	@echo 'TODO: update README.md with "git-status --help"'
-	@[ -d ~/apps ] && cp ./dist/git-status ~/apps/ || echo "NotFound: ~/apps"
+	@[ -d ~/apps ] && cp ./dist/git-rstatus ~/apps/ || echo "NotFound: ~/apps"
 
 publish-win: build
 	@echo " -- Publish: Windows -- "
