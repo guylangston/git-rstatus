@@ -122,6 +122,13 @@ public class GitStatusApp : IDisposable
         {
             logger.Log("Run: Init");
             consoleRegion.Init(3);
+            Console.CancelKeyPress += (o,e) =>
+            {
+                // Handle Ctrl+C to restore cursor
+                consoleRegion.Revert();
+                consoleRegion.Dispose();
+                Console.WriteLine("Ctrl+C detected");
+            };
             consoleRegion.WriteLine($"[{AppName}] scanning...");
         }
 
@@ -139,7 +146,6 @@ public class GitStatusApp : IDisposable
                 }
                 logger.Log("Run: ReInit/Resize");
                 // First draw after scanning resizes the dynamic console region
-                consoleRegion.WriteLine($"[{AppName}] found {Roots.Count}, fetching...");
                 consoleRegion.ReInit(Roots.Count + 1);
                 resize = true;
             }
@@ -246,11 +252,11 @@ public class GitStatusApp : IDisposable
         }
     }
 
+    int scaned = 0;
+    int roots =  0;
     private async Task ScanForGitFolders()
     {
         var scanResult = new ConcurrentBag<GitRoot>();
-        int scaned = 0;
-        int roots =  0;
         await Parallel.ForEachAsync(ArgPath, async (path, ct) =>
         {
             var comp = new GitFolderScanner()
@@ -266,11 +272,13 @@ public class GitStatusApp : IDisposable
                         }
                     }
                     return false;
+                },
+                UpdateProgress = (hit) => {
+                    Interlocked.Increment(ref scaned);
+                    if (hit) Interlocked.Increment(ref roots);
                 }
             };
             await comp.Scan(path, ArgMaxDepth);
-            Interlocked.Increment(ref roots);
-            Interlocked.Add(ref scaned, comp.ProgressDirectories);
 
             foreach (var r in comp.Roots)
             {
@@ -330,6 +338,12 @@ public class GitStatusApp : IDisposable
     private void Render()
     {
         consoleRegion.StartDraw(false);
+
+        if (!scanComplete)
+        {
+            consoleRegion.WriteLine($"[{AppName}] scanning for `.git` folders, scanned {scaned:#,##0}, found {roots:#,##0} repos...");
+            return;
+        }
 
         if (gitRoots == null || gitRoots.Length == 0) return;
 
