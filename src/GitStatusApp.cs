@@ -127,7 +127,8 @@ public class GitStatusApp : IDisposable
                 // Handle Ctrl+C to restore cursor
                 consoleRegion.Revert();
                 consoleRegion.Dispose();
-                Console.WriteLine("Ctrl+C detected");
+                Console.WriteLine();
+                Console.WriteLine("Ctrl+C detected, exiting...");
             };
             consoleRegion.WriteLine($"[{AppName}] scanning...");
         }
