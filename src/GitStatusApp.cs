@@ -1,6 +1,9 @@
 using System.Collections.Concurrent;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Text;
+using System.Text.Json;
+using System.Text.Json.Serialization.Metadata;
 
 public class GitStatusApp : IDisposable
 {
@@ -192,10 +195,11 @@ public class GitStatusApp : IDisposable
 
         if (ArgJson)
         {
-            var summary = Roots.Select(x=>x.ToSummary()).ToArray();
-            var args = new System.Text.Json.JsonSerializerOptions();
-            args.WriteIndented = true;
-            Console.WriteLine( System.Text.Json.JsonSerializer.Serialize(summary, args));
+            throw new NotSupportedException("Json output is not supported for AOT builds");
+            // var summary = Roots.Select(x=>x.ToSummary()).ToArray();
+            // var args = new JsonSerializerOptions();
+            // args.WriteIndented = true;
+            // Console.WriteLine(JsonSerializer.Serialize(summary, JsonTypeInfo.CreateJsonTypeInfo<GitRootSummary>(args)));
         }
 
         WriteSummaryToLogger();
@@ -342,7 +346,18 @@ public class GitStatusApp : IDisposable
 
         if (!scanComplete)
         {
-            consoleRegion.WriteLine($"[{AppName}] scanning for `.git` folders, scanned {scaned:#,##0}, found {roots:#,##0} repos...");
+            consoleRegion.WriteLine($"[{AppName}] scanning for `.git` folders...");
+            consoleRegion.Write($"   Scanned         ");
+            Console.ForegroundColor = ConsoleColor.Blue;
+            consoleRegion.Write($"{scaned:#,##0}");
+            Console.ForegroundColor  = consoleRegion.StartFg;
+            consoleRegion.WriteLine();
+
+            consoleRegion.Write($"   Git repos found ");
+            Console.ForegroundColor = ConsoleColor.Green;
+            consoleRegion.Write($"{roots:#,##0}");
+            Console.ForegroundColor  = consoleRegion.StartFg;
+            consoleRegion.WriteLine();
             return;
         }
 
