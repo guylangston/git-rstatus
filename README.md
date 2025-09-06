@@ -25,6 +25,7 @@ project. It is a small/simple help unlike the larger fully-feature `lazygit`.
 - [x] `--exclude path,path,path`
 - [x] `--help` text and man-style doc file
 - [ ] Support shell command completion
+- [ ] Cache  git dirs from previos run (with bacground rescan)
 
 ## Roadmap
 
