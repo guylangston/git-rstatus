@@ -1,3 +1,4 @@
+namespace GitRStatus.TUI;
 public class DynamicConsoleRegionWithLogger : DynamicConsoleRegion
 {
     public ILogger? Logger { get; set; }

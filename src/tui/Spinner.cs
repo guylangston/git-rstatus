@@ -1,3 +1,4 @@
+namespace GitRStatus.TUI;
 public class Spinner
 {
     const string SeqSmall = "⠟⠯⠷⠾⠽⠻";

@@ -8,6 +8,7 @@
         <PublishAot>true</PublishAot>
         <StripSymbols>true</StripSymbols>
         <InvariantGlobalization>true</InvariantGlobalization>
+        <RootNamespace>GitRStatus</RootNamespace>
     </PropertyGroup>
 
     <PropertyGroup>

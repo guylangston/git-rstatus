@@ -1,3 +1,4 @@
+namespace GitRStatus.TUI;
 public static class StringHelper
 {
     public static string ElipseAtEnd(string text, int max, string elipse = "...")

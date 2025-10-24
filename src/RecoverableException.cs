@@ -1,3 +1,4 @@
+namespace GitRStatus;
 public class RecoverableException : Exception
 {
     public RecoverableException() { }

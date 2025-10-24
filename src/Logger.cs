@@ -1,3 +1,4 @@
+namespace GitRStatus;
 
 /// <summary>DISCLAIMER: I don't want to use `Microsoft.Extensions.Logging.ILogger`, or Nlog, etc.
 /// As I want this project to have zero-depenancy</summary>

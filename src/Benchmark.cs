@@ -1,5 +1,9 @@
 using System.Diagnostics;
+using GitRStatus.TUI;
 
+namespace GitRStatus;
+
+#if DEBUG
 public static class Benchmark
 {
     public static int Run(string[] args)
@@ -33,4 +37,4 @@ public static class Benchmark
         return 0;
     }
 }
-
+#endif

@@ -1,3 +1,4 @@
+namespace GitRStatus;
 public static class GeneralHelper
 {
     public static IEnumerable<T[]> CollectInBuckets<T>(IEnumerable<T> items, int bucketSize)

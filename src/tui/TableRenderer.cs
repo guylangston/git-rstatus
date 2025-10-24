@@ -1,3 +1,4 @@
+namespace GitRStatus.TUI;
 public interface IHeader
 {
     string? Title { get; }

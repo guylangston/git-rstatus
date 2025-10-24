@@ -1,5 +1,7 @@
 using System.Diagnostics;
 
+namespace GitRStatus;
+
 public record ProcessResult
 {
     public required int ExitCode { get; init; }
