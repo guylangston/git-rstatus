@@ -46,7 +46,7 @@ public class GitRoot
     ProcessResult? gitRemote;
     ProcessResult? gitLog;
     ProcessResult? gitPull;
-    ILogger logger;
+    readonly ILogger logger;
 
     public GitRoot(string path, string relPath)
     {
@@ -55,14 +55,14 @@ public class GitRoot
         logger = Program.LoggerFactory.GetLogger(nameof(GitRoot) + ":" + relPath);
     }
 
-    public string     Path          { get; }
-    public string     PathRelative  { get; }
-    public GitStatusResult  Status        { get; set;    }    = GitStatusResult.Found;
-    public RunStatus  StatusRunning { get; set;    }    = RunStatus.Pending;
-    public string?    Branch        { get; set;    }
-    public string?    BranchStatus  { get; set;    }
-    public Exception? Error         { get; private set; }
-    public TimeSpan   Duration      { get; private set; }
+    public string          Path          { get; }
+    public string          PathRelative  { get; }
+    public GitStatusResult Status        { get; set; }    = GitStatusResult.Found;
+    public RunStatus       StatusRunning { get; set; }    = RunStatus.Pending;
+    public string?         Branch        { get; set; }
+    public string?         BranchStatus  { get; set; }
+    public Exception?      Error         { get; private set; }
+    public TimeSpan        Duration      { get; private set; }
 
     public bool IsComplete => StatusRunning == RunStatus.Complete || StatusRunning == RunStatus.Error;
     public string? LogFirstLine => gitLog?.StdOut.FirstOrDefault();

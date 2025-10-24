@@ -1,11 +1,37 @@
 # git-rstatus
 
-> Fast recursive scan for all git repos. Async `git fetch && git status`
+> Simple, fast, recursive scan for all git repos. Async `git fetch && git status`
 
 `git-rstatus` is a quality-of-life tool to quickly see that status of numerous
 project. It is a small/simple help unlike the larger fully-feature `lazygit`.
 
 ![Screenshot](./doc/git-rstatus-0.4.0.gif)
+
+## TLDR; Quick start
+
+```bash
+# find all git projects and display `status`
+# will recursively search user user ~ and /mnt/my_git_repos
+git-rstatus ~ /mnt/my_git_repos
+
+# real-world example
+# (1) don't search `tmux` or `archive` folders
+# (2) don't call `git fetch` on `linux` folder
+# (3) `git pull` before `git status`
+# (4) display absolute paths
+# (5) recursive search in `~/repo` and `~/scripts/`
+git-rstatus --exclude tmux,archive --no-fetch linux --pull --abs ~/repo ~/scripts
+
+
+# real-world workflow: create a script with all args, and add it to the $PATH
+# ───────┬────────────────────────────────────────────────────────────────────────────────────
+#        │ File: /home/guy/scripts/git-rstatus-update.sh
+# ───────┼────────────────────────────────────────────────────────────────────────────────────
+# 1      │ #!/bin/sh
+# 2      │ git-rstatus --exclude tmux,archive --no-fetch linux --pull ~/repo ~/scripts --abs
+# ───────┴────────────────────────────────────────────────────────────────────────────────────
+git-rstatus-update.sh
+```
 
 ## Feature List - CLI
 
@@ -55,7 +81,7 @@ project. It is a small/simple help unlike the larger fully-feature `lazygit`.
 
 ```bash
 git-rstatus: Fast recursive git status (with fetch and pull)
-   version: 0.4.0
+   version: 0.4.1
    project: https://github.com/guylangston/git-rstatus
 
 git-rstatus -switch --param path1 path2 path3
