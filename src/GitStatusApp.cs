@@ -75,7 +75,6 @@ public class GitStatusApp : IDisposable
     public List<string> ArgExclude { get; } = new();
     public List<string> ArgNoFetch { get; } = new();
     public bool         ArgRemote { get; set; }
-    public int          ArgMaxDepth { get; } = 8;
     public int          ArgThreadCount { get; } = 8;
     public bool         ArgPull     => ArgAllFlags.Contains('p') || ArgAllParams.Contains("--pull");
     public bool         ArgHelp     => ArgAllFlags.Contains('?') ||  ArgAllFlags.Contains('h') || ArgAllParams.Contains("--help");
@@ -83,6 +82,28 @@ public class GitStatusApp : IDisposable
     public bool         ArgAbs      => ArgAllFlags.Contains('a') || ArgAllParams.Contains("--abs");
     public bool         ArgScanOnly => ArgAllFlags.Contains('s') || ArgAllParams.Contains("--scan-only");
     public bool         ArgJson     => ArgAllFlags.Contains('j') || ArgAllParams.Contains("--json");
+    public int          ArgMaxDepth
+    {
+        get
+        {
+            const string prefix = "--depth=";
+            foreach(var arg in ArgsRaw)
+            {
+                if (arg.StartsWith(prefix))
+                {
+                    var rem = arg[prefix.Length..];
+                    if (int.TryParse(rem, out var argDepth))
+                    {
+                        return argDepth;
+                    }
+                    break;
+                }
+            }
+
+            return ArgMaxDepthDefault; // default max
+        }
+    }
+    public const int ArgMaxDepthDefault = 8;
     public IReadOnlyList<GitRoot> Roots => gitRoots ?? throw new NullReferenceException("gitRoots. Scan expected first");
 
     public bool ShouldFetch(GitRoot root)
@@ -289,7 +310,7 @@ public class GitStatusApp : IDisposable
                 scanResult.Add(r);
             }
         });
-        logger.Log($"Scanned: {roots} roots, {scaned} folders");
+        logger.Log($"Scanned: {roots} roots, {scaned} folders (max-depth {ArgMaxDepth})");
         gitRoots = scanResult.ToArray();
         scanComplete = true;
     }
@@ -315,7 +336,7 @@ public class GitStatusApp : IDisposable
             -a, --abs                   # use absolute paths
             -v, --version               # version information
             -s, --scan-only             # just scan for all git folders and display
-            --depth number              # don't recurse deeper than `number`
+            --depth=number              # don't recurse deeper than `number` (default={ArgMaxDepthDefault})
             --log                       # create log file (in $PWD)
             --json                      # export to json (no other ouptut)
 
@@ -350,7 +371,7 @@ public class GitStatusApp : IDisposable
             Console.ForegroundColor = ConsoleColor.Blue;
             consoleRegion.Write($"{scaned:#,##0}");
             Console.ForegroundColor  = consoleRegion.StartFg;
-            consoleRegion.WriteLine();
+            consoleRegion.WriteLine($" (max-depth {ArgMaxDepth})");
 
             consoleRegion.Write($"   Git repos found ");
             Console.ForegroundColor = ConsoleColor.Green;
