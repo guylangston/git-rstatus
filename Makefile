@@ -5,6 +5,7 @@ publish-linux: build
 	@echo " -- Publish: Linux -- "
 	@[ ! -d ./dist ] && mkdir ./dist || rm -f ./dist/*
 	@cd ./src; dotnet publish -c Release --sc -r linux-x64 -p:PublishTrimmed=true -p:PublishSingleFile=true -o ../dist/
+	@cp ./dist/git-rstatus ./dist/git-rstatus--linux-x64-`cat src/git-rstatus.csproj | xq -e "//Version"`
 	@echo 'TODO: update README.md with "git-status --help"'
 	@[ -d ~/apps ] && cp ./dist/git-rstatus ~/apps/ || echo "NotFound: ~/apps"
 
