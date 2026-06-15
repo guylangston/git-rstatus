@@ -290,7 +290,7 @@ public class GitStatusApp : IDisposable
                 {
                     foreach (var ex in ArgExclude)
                     {
-                        if (path.EndsWith(ex))
+                        if (path.Contains(ex))
                         {
                             logger.Log($"Excluding: {path} (because {ex})");
                             return true;
