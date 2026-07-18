@@ -384,10 +384,12 @@ public class GitStatusApp : IDisposable
         if (gitRoots == null || gitRoots.Length == 0) return;
 
         var table = new TableRenderer<TableColumn, GitRoot, object>();
+        var remainder = consoleRegion.Width - 30 - 60;
+        if (remainder < 10) remainder = 30;
         table.Columns.Add(new TableColumn<GitRoot, object>() { Title = "Status", Size = 6 } );
         table.Columns.Add(new TableColumn<GitRoot, object>("Path", 30, 60));
         table.Columns.Add(new TableColumn<GitRoot, object>("Branch", 10, 30));
-        table.Columns.Add(new TableColumn<GitRoot, object>("Git", 30, 60));
+        table.Columns.Add(new TableColumn<GitRoot, object>("Git", 30, remainder));
         int cc = 1;
         foreach(var item in Roots.OrderBy(x=>x.Path))
         {

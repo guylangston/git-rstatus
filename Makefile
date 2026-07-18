@@ -1,6 +1,10 @@
 build:
 	@cd ./src; dotnet build --nologo -v q --property WarningLevel=0 /clp:ErrorsOnly
 
+publish-osx: build
+	@echo " -- Publish: OSX -- "
+	@cd ./src; dotnet publish -c Release --sc -p:PublishSingleFile=true -o ../dist/
+
 publish-linux: build
 	@echo " -- Publish: Linux -- "
 	@[ ! -d ./dist ] && mkdir ./dist || rm -f ./dist/*
