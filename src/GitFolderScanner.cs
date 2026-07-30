@@ -35,7 +35,7 @@ public class GitFolderScanner
                 {
                     foreach (var kid in Directory.GetDirectories(path))
                     {
-                        if (!Exclude(kid))
+                        if (!Exclude(Path.GetRelativePath(root, kid)))
                         {
                             Recurse(kid, depth + 1);
                         }
